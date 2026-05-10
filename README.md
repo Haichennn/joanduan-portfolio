@@ -18,12 +18,12 @@ Personal portfolio for **Haichen Duan** — Wirtschaftsinformatik @ TUM Munich.
 
 ## Run locally
 
-\`\`\`bash
+```bash
 git clone https://github.com/Haichennn/joanduan-portfolio
 cd joanduan-portfolio
 npm install
 npm run dev
-\`\`\`
+```
 
 Open [http://localhost:3000](http://localhost:3000).
 
@@ -33,10 +33,10 @@ Editorial woman who writes code. Built on four tokens:
 
 | Token | Value | Use |
 |-------|-------|-----|
-| \`--base\` | \`#FAF8F5\` | ivory background |
-| \`--ink\` | \`#1A1A1A\` | primary text |
-| \`--accent\` | \`#A0673E\` | caramel signature |
-| \`--mute\` | \`#8B8B8B\` | secondary text |
+| `--base` | `#FAF8F5` | ivory background |
+| `--ink` | `#1A1A1A` | primary text |
+| `--accent` | `#A0673E` | caramel signature |
+| `--mute` | `#8B8B8B` | secondary text |
 
 ## Status
 
