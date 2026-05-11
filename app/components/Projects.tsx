@@ -231,7 +231,7 @@ function VisualTerminal() {
       </text>
 
       <text x="90" y="340" className="font-mono" fontSize="15" fill="var(--accent)">$</text>
-      <rect x="110" y="328" width="10" height="15" fill="var(--accent)" />
+      <rect x="105" y="325" width="12" height="18" fill="var(--accent)" />
     </svg>
   );
 }
@@ -304,32 +304,32 @@ function VisualVennCircles() {
 
 function VisualQuoteLines() {
   const lines = [
-    { y: 70, w: 300, accent: false, ring: false },
-    { y: 115, w: 450, accent: true, ring: false },
-    { y: 160, w: 540, accent: false, ring: true },
-    { y: 205, w: 360, accent: false, ring: false },
-    { y: 250, w: 510, accent: false, ring: false },
-    { y: 295, w: 420, accent: true, ring: false },
-    { y: 340, w: 570, accent: false, ring: false },
-    { y: 385, w: 390, accent: false, ring: false },
+    { x: 80, xEnd: 440, y: 80, accent: false, ring: false },
+    { x: 80, xEnd: 560, y: 120, accent: true, ring: false },
+    { x: 80, xEnd: 620, y: 160, accent: false, ring: true },
+    { x: 80, xEnd: 460, y: 200, accent: false, ring: false },
+    { x: 80, xEnd: 580, y: 240, accent: false, ring: false },
+    { x: 80, xEnd: 400, y: 280, accent: true, ring: false },
+    { x: 80, xEnd: 600, y: 320, accent: false, ring: false },
+    { x: 80, xEnd: 480, y: 360, accent: false, ring: false },
   ];
   return (
     <svg viewBox="0 0 800 450" className="w-full h-full" fill="none">
       {lines.map((l, i) => (
         <g key={i}>
           <line
-            x1="120"
+            x1="70"
             y1={l.y - 6}
-            x2="120"
+            x2="70"
             y2={l.y + 6}
             stroke={l.accent ? "var(--accent)" : "var(--ink)"}
             strokeOpacity={l.accent ? undefined : 0.4}
             strokeWidth="1.5"
           />
           <line
-            x1="130"
+            x1={l.x}
             y1={l.y}
-            x2={130 + l.w}
+            x2={l.xEnd}
             y2={l.y}
             stroke="var(--ink)"
             strokeOpacity="0.5"
@@ -337,7 +337,7 @@ function VisualQuoteLines() {
           />
           {l.ring && (
             <circle
-              cx={130 + l.w + 15}
+              cx={l.xEnd + 20}
               cy={l.y}
               r="4"
               stroke="var(--accent)"
@@ -365,7 +365,7 @@ const projects = [
     tags: ["Next.js 16", "Tailwind v4", "TypeScript", "Vercel"],
     status: "live" as const,
     year: "2026.05",
-    liveUrl: "/",
+    liveUrl: "/projects/joanduan-dev",
     codeUrl: "https://github.com/Haichennn/joanduan-portfolio",
     visual: <VisualSiteMap />,
   },
@@ -379,8 +379,8 @@ const projects = [
     tags: ["React 19", "Vite", "Tailwind", "Leaflet", "Claude API"],
     status: "live" as const,
     year: "2026.04 – 2026.06",
-    liveUrl: "https://wayback-beige.vercel.app/",
-    codeUrl: "https://github.com/",
+    liveUrl: "/projects/wayback",
+    secondaryUrl: "https://wayback-beige.vercel.app/",
     visual: <VisualMapPin />,
   },
   {

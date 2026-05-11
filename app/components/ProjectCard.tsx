@@ -10,6 +10,7 @@ type Props = {
   status: Status;
   year: string;
   liveUrl?: string;
+  secondaryUrl?: string;
   codeUrl?: string;
   anchor: string;
   visual: ReactNode;
@@ -62,6 +63,7 @@ export default function ProjectCard({
   status,
   year,
   liveUrl,
+  secondaryUrl,
   codeUrl,
   anchor,
   visual,
@@ -116,6 +118,15 @@ export default function ProjectCard({
                 className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--ink)] hover:text-[var(--accent)] transition-colors"
               >
                 View →
+              </a>
+            )}
+            {secondaryUrl && (
+              <a
+                href={secondaryUrl}
+                {...extAttrs(secondaryUrl)}
+                className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--ink)] hover:text-[var(--accent)] transition-colors"
+              >
+                Demo →
               </a>
             )}
             {codeUrl && (

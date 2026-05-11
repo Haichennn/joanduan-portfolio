@@ -1,4 +1,5 @@
 import Hero from "./components/Hero";
+import About from "./components/About";
 import Projects from "./components/Projects";
 
 export default function Home() {
@@ -7,6 +8,7 @@ export default function Home() {
       <section className="min-h-screen">
         <Hero />
       </section>
+      <About />
       <Projects />
     </main>
   );

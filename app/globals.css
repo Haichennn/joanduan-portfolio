@@ -15,10 +15,47 @@
 :root {
   --base: #FAF8F5;
   --grid: rgba(0, 0, 0, 0.06);
+  --ink: #1A1A1A;
+  --accent: #A0673E;
+  --mute: #8B8B8B;
 }
 
 body {
   background: var(--base);
   color: var(--ink);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+@keyframes badge-swing-entrance {
+  0% {
+    transform: rotateZ(-15deg);
+  }
+  30% {
+    transform: rotateZ(12deg);
+  }
+  60% {
+    transform: rotateZ(-6deg);
+  }
+  85% {
+    transform: rotateZ(3deg);
+  }
+  100% {
+    transform: rotateZ(0deg);
+  }
+}
+
+@keyframes badge-sway-idle {
+  0%, 100% {
+    transform: rotateZ(-0.8deg);
+  }
+  50% {
+    transform: rotateZ(0.8deg);
+  }
+}
+
+.badge-swing {
+  animation:
+    badge-swing-entrance 1.6s ease-out,
+    badge-sway-idle 4s ease-in-out 1.6s infinite;
+  transform-origin: top center;
 }
