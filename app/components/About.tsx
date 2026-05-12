@@ -34,8 +34,9 @@ const chapters = [
   {
     title: "THE BRIDGE",
     paragraphs: [
-      "In 2025 I helped run operations for a 1.6M-follower content creator — analytics, community management, video production. I watched the comment data tell truths her audiences would never say to her face.",
-      "That's the work I want to keep doing: building the back-end that lets the front-line breathe.",
+      "My mother is an engineering designer. She designs hardware — conferencing systems and the equipment deployed in meeting rooms around the world.",
+      "I grew up watching her work. Drawing on the screen, running the meeting, making the call. Every product she shipped did two things: contributed to the business, and got used by real people in real rooms.",
+      "She does this in mechanical engineering. I want to do it in computer science. Different stack, same kind of work — sustainable products that create value for the business and the people who use it.",
     ],
   },
   {
@@ -253,44 +254,76 @@ function IDBadge() {
             {/* Caramel TUM band */}
             <div className="w-full bg-[var(--accent)] py-2 px-3">
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--base)] text-center">
-                TUM · CIT
+                TUM · WIRTSCHAFTSINFORMATIK
               </p>
             </div>
 
-            {/* Body content */}
-            <div className="px-5 pt-5 pb-6 h-full flex flex-col">
-              <div>
-                <div className="font-mono text-[9px] tracking-[0.15em] uppercase text-[var(--accent)]">
-                  Contact
-                </div>
-                <div className="mt-2 flex flex-col gap-1 text-[12px] text-[var(--ink)] leading-snug">
-                  <a href="mailto:haic.duan@gmail.com" className="hover:text-[var(--accent)] transition-colors">
-                    haic.duan@gmail.com
-                  </a>
-                  <a href="https://github.com/Haichennn" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--accent)] transition-colors">
-                    github.com/Haichennn
-                  </a>
-                  <a href="https://www.linkedin.com/in/haichen-duan-6689192a7/" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--accent)] transition-colors">
-                    in/haichen-duan
-                  </a>
-                </div>
-              </div>
+            {/* Contact heading */}
+            <div className="px-5 pt-6 pb-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] mb-1">
+                Contact
+              </p>
+              <p className="font-display text-xl text-[var(--ink)] tracking-tight mb-4">
+                Haichen Duan
+              </p>
+              <div className="w-12 h-px bg-[var(--accent)] mb-6" />
+            </div>
 
-              <div className="mt-6">
-                <div className="font-mono text-[9px] tracking-[0.15em] uppercase text-[var(--accent)]">
-                  Location
-                </div>
-                <div className="mt-1.5 text-[13px] text-[var(--ink)]">
-                  Munich, DE
-                </div>
-              </div>
+            {/* Icons row */}
+            <div className="flex-shrink-0 flex items-start justify-center gap-6 px-5">
+              <a
+                href="https://github.com/Haichennn"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                className="text-[var(--ink)]/70 hover:text-[var(--accent)] transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.339-2.22-.252-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.748-1.025 2.748-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.92.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+                </svg>
+              </a>
+              <a
+                href="https://www.linkedin.com/in/haichen-duan"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="text-[var(--ink)]/70 hover:text-[var(--accent)] transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zM8.339 18.337v-8.59H5.667v8.59h2.672zM7.003 8.574a1.548 1.548 0 100-3.096 1.548 1.548 0 000 3.096zm11.335 9.763v-4.706c0-2.385-.513-4.22-3.302-4.22-1.342 0-2.24.736-2.606 1.434h-.037V9.747h-2.566v8.59h2.671v-4.25c0-1.122.214-2.208 1.604-2.208 1.371 0 1.388 1.282 1.388 2.28v4.178h2.848z"/>
+                </svg>
+              </a>
+              <a
+                href="mailto:haichen.duan@tum.de"
+                aria-label="Email"
+                className="text-[var(--ink)]/70 hover:text-[var(--accent)] transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="5" width="18" height="14" />
+                  <path d="M3 7l9 6 9-6" />
+                </svg>
+              </a>
+            </div>
 
-              <div className="mt-auto flex flex-col items-center gap-3">
-                <div className="w-8 h-px bg-[var(--accent)]" />
-                <div className="font-[family-name:var(--font-display)] italic text-[15px] text-[var(--accent)] leading-snug text-center">
-                  Probare et Aedificare.
-                </div>
-              </div>
+            {/* Location */}
+            <div className="px-5 pt-6 pb-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] mb-2">
+                Location
+              </p>
+              <p className="font-sans text-sm text-[var(--ink)]">
+                Munich, DE
+              </p>
+            </div>
+
+            {/* Footer */}
+            <div className="w-full px-5 pb-5 mt-auto flex flex-col items-center">
+              <div className="w-8 h-px bg-[var(--accent)] mb-3" />
+              <p className="font-[family-name:var(--font-display)] italic text-sm text-[var(--accent)] text-center">
+                Probare et Aedificare.
+              </p>
             </div>
           </div>
         </div>
@@ -301,7 +334,7 @@ function IDBadge() {
 
 export default function About() {
   return (
-    <section id="about" className="py-24 md:py-48 px-6 bg-[var(--base)]">
+    <section id="about" className="py-24 md:py-32 px-6 md:px-12">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-20">
           <div className="md:col-span-2 space-y-20 md:space-y-24 order-2 md:order-1">

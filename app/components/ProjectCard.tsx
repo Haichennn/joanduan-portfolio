@@ -13,7 +13,9 @@ type Props = {
   secondaryUrl?: string;
   codeUrl?: string;
   anchor: string;
+  slug: string;
   visual: ReactNode;
+  disclaimer?: ReactNode;
   isFirst: boolean;
 };
 
@@ -66,12 +68,15 @@ export default function ProjectCard({
   secondaryUrl,
   codeUrl,
   anchor,
+  slug,
   visual,
+  disclaimer,
   isFirst,
 }: Props) {
   return (
     <article
       id={anchor}
+      data-project-slug={slug}
       className={
         isFirst ? "" : "border-t border-[var(--ink)]/10 pt-24 md:pt-32"
       }
@@ -103,6 +108,8 @@ export default function ProjectCard({
           </span>
         ))}
       </div>
+
+      {disclaimer && <div className="mb-6">{disclaimer}</div>}
 
       <div className="flex justify-between items-baseline">
         <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[var(--mute)]">

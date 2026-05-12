@@ -155,57 +155,6 @@ function VisualBarsAxis() {
   );
 }
 
-function VisualMatchFlow() {
-  const leftCols = [100, 150, 200, 250];
-  const rightCols = [550, 600, 650, 700];
-  const rows = [120, 180, 240, 300];
-  const accentRight = new Set(["600-120", "700-180", "550-300"]);
-  const connectors = [
-    { x1: 250, y1: 120, x2: 550, y2: 120, accent: false },
-    { x1: 250, y1: 180, x2: 550, y2: 300, accent: true },
-    { x1: 250, y1: 240, x2: 600, y2: 240, accent: false },
-    { x1: 250, y1: 300, x2: 700, y2: 180, accent: false },
-  ];
-  return (
-    <svg viewBox="0 0 800 450" className="w-full h-full" fill="none">
-      <text x="175" y="85" textAnchor="middle" className="font-mono" fontSize="11" fill="var(--ink)" fillOpacity="0.6" letterSpacing="2">
-        REQS
-      </text>
-      <text x="625" y="85" textAnchor="middle" className="font-mono" fontSize="11" fill="var(--ink)" fillOpacity="0.6" letterSpacing="2">
-        FIT
-      </text>
-      <text x="400" y="230" textAnchor="middle" className="font-mono" fontSize="20" fill="var(--ink)" fillOpacity="0.4">
-        →
-      </text>
-
-      {connectors.map((c, i) =>
-        c.accent ? (
-          <line key={i} x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2} stroke="var(--accent)" strokeWidth="1" />
-        ) : (
-          <line key={i} x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2} stroke="var(--ink)" strokeOpacity="0.2" strokeWidth="1" />
-        )
-      )}
-
-      {leftCols.flatMap((cx) =>
-        rows.map((cy) => (
-          <circle key={`L-${cx}-${cy}`} cx={cx} cy={cy} r="4" stroke="var(--ink)" strokeOpacity="0.5" strokeWidth="1.5" />
-        ))
-      )}
-
-      {rightCols.flatMap((cx) =>
-        rows.map((cy) => {
-          const key = `${cx}-${cy}`;
-          return accentRight.has(key) ? (
-            <circle key={`R-${key}`} cx={cx} cy={cy} r="4" fill="var(--accent)" />
-          ) : (
-            <circle key={`R-${key}`} cx={cx} cy={cy} r="4" stroke="var(--ink)" strokeOpacity="0.5" strokeWidth="1.5" />
-          );
-        })
-      )}
-    </svg>
-  );
-}
-
 function VisualTerminal() {
   return (
     <svg viewBox="0 0 800 450" className="w-full h-full" fill="none">
@@ -354,9 +303,17 @@ function VisualQuoteLines() {
   );
 }
 
+const creatorEconomyDisclaimer = (
+  <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-[var(--mute)]/60 italic mt-3 leading-relaxed">
+    Independent project · public Bilibili / Douyin API data · inspired by but
+    unrelated to prior client work
+  </p>
+);
+
 const projects = [
   {
     id: "joanduan-dev",
+    slug: "joanduan-dev",
     anchor: "project-joanduan-dev",
     category: "ENGINEERING / FRONTEND",
     title: "joanduan.dev",
@@ -371,6 +328,7 @@ const projects = [
   },
   {
     id: "wayback",
+    slug: "wayback",
     anchor: "project-wayback",
     category: "ENGINEERING / FRONTEND",
     title: "WayBack",
@@ -385,6 +343,7 @@ const projects = [
   },
   {
     id: "creator-economy-analytics",
+    slug: "creator-economy-analytics",
     anchor: "project-creator-economy-analytics",
     category: "DATA / ANALYTICS",
     title: "Creator Economy Analytics",
@@ -394,21 +353,11 @@ const projects = [
     status: "in-progress" as const,
     year: "2026.05",
     visual: <VisualBarsAxis />,
-  },
-  {
-    id: "ai-job-match",
-    anchor: "project-ai-job-match",
-    category: "AI / TOOLING",
-    title: "AI Job Match Tool",
-    description:
-      "A Claude-powered evaluator that reads job descriptions and surfaces the real fit — beyond keyword matching, into hidden requirements and soft signals. Built to make my own job search rigorous.",
-    tags: ["Claude API", "Prompt Engineering", "Next.js"],
-    status: "in-progress" as const,
-    year: "2026.05",
-    visual: <VisualMatchFlow />,
+    disclaimer: creatorEconomyDisclaimer,
   },
   {
     id: "ai-sales-cli",
+    slug: "ai-sales-workflow-cli",
     anchor: "project-ai-sales-cli",
     category: "AI / AUTOMATION",
     title: "AI Sales Workflow CLI",
@@ -421,6 +370,7 @@ const projects = [
   },
   {
     id: "industrial-forecasting",
+    slug: "industrial-sales-forecasting",
     anchor: "project-industrial-forecasting",
     category: "DATA / FORECASTING",
     title: "Industrial Sales Forecasting",
@@ -433,6 +383,7 @@ const projects = [
   },
   {
     id: "ai-vision-evolution",
+    slug: "ai-vision-evolution",
     anchor: "project-ai-vision-evolution",
     category: "AI / RESEARCH",
     title: "AI Vision Evolution",
@@ -445,6 +396,7 @@ const projects = [
   },
   {
     id: "nlp-creator-comments",
+    slug: "nlp-creator-comments",
     anchor: "project-nlp-creator-comments",
     category: "AI / NLP",
     title: "NLP on Creator Comments",
@@ -459,8 +411,8 @@ const projects = [
 
 export default function Projects() {
   return (
-    <section id="projects" className="py-24 md:py-48 px-6 bg-[var(--base)]">
-      <div className="max-w-3xl mx-auto">
+    <section id="projects" className="py-24 md:py-32 px-6 md:px-12">
+      <div className="max-w-6xl mx-auto">
         <header className="mb-24 md:mb-32">
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--mute)] mb-6 md:mb-8">
             — PROJECTS —
@@ -469,7 +421,7 @@ export default function Projects() {
             What I&apos;m working on.
           </h2>
           <p className="font-sans text-base text-[var(--mute)] leading-relaxed max-w-xl">
-            Eight projects. Two shipped, two in progress, four on the roadmap.
+            Seven projects. Two live, one in progress, four on the roadmap.
           </p>
         </header>
 
