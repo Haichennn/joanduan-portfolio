@@ -1,4 +1,5 @@
 import ParticleHaichen from "./ParticleHaichen";
+import CompositionalReading from "./CompositionalReading";
 
 export default function Hero() {
   return (
@@ -125,16 +126,25 @@ export default function Hero() {
       {/* Layer 2 — Floating status labels */}
       {/* Top-right: version tag */}
       <div className="absolute top-6 right-6 md:top-8 md:right-10 z-20">
-        <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--mute)]">
+        <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--accent)]">
           joanduan.dev <span className="text-[var(--accent)]/70">·</span> v0.3
         </p>
       </div>
 
       {/* Bottom-left: ML pipeline signature */}
-      <div className="absolute bottom-6 left-6 md:bottom-8 md:left-10 z-20">
+      <div className="absolute bottom-16 left-6 md:bottom-16 md:left-10 z-20">
         <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--mute)]">
           NOW <span className="text-[var(--accent)]/70">·</span> ingest <span className="text-[var(--accent)]/70">·</span> learn <span className="text-[var(--accent)]/70">·</span> ship
         </p>
+      </div>
+
+      {/* Compositional reading trigger — sits in segment 3 zone, just above timeline labels */}
+      <div className="absolute bottom-16 left-0 right-0 z-20 grid grid-cols-3 pointer-events-none px-8">
+        <div></div>
+        <div></div>
+        <div className="flex justify-center">
+          <CompositionalReading />
+        </div>
       </div>
 
       {/* Timeline labels — Joan's personal-growth arc, one per background segment */}
