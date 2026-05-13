@@ -42,12 +42,12 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Segment 2 — Midjourney era: soft warm vignette spotlight under HAICHEN */}
+        {/* Segment 2 — Midjourney era: photographic vignette matching P2 (warm core → dark ring → fade) */}
         <div className="relative era-midjourney">
           <div
             className="absolute inset-0"
             style={{
-              background: `radial-gradient(ellipse 500px 350px at 50% 50%, #6B3F1F 0%, #5A3825 35%, #2A1F14 70%, transparent 100%)`,
+              background: `radial-gradient(ellipse 550px 400px at 50% 50%, #7A4A2A 0%, #6B3F1F 25%, #3A2818 50%, #1A1208 75%, transparent 100%)`,
             }}
           />
           <div
