@@ -42,12 +42,12 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Segment 2 — Midjourney era: deep caramel core that survives veil overlay */}
-        <div className="relative era-midjourney">
+        {/* Segment 2 — Midjourney era: warm halo enveloping HAICHEN (wide ellipse, overflows column) */}
+        <div className="relative era-midjourney overflow-visible">
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 overflow-visible"
             style={{
-              background: `radial-gradient(circle 450px at 50% 50%, #6B3F1F 0%, #6B3F1F 30%, #4A2E18 55%, #2A1F14 80%, transparent 100%)`,
+              background: `radial-gradient(ellipse 800px 500px at 50% 50%, #6B3F1F 0%, #6B3F1F 20%, #5A3825 40%, #3A2818 70%, transparent 100%)`,
             }}
           />
           <div
