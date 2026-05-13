@@ -9,9 +9,7 @@ export default function Home() {
   return (
     <main className="bg-[var(--base)] relative">
       <SideNav />
-      <section className="min-h-screen">
-        <Hero />
-      </section>
+      <Hero />
       <About />
       <Experience />
       <Projects />
