@@ -63,8 +63,8 @@ body {
 /* AI Vision Evolution — visual texture animations */
 
 @keyframes era-midjourney-breathe {
-  0%, 100% { opacity: 0.10; }
-  50%      { opacity: 0.18; }
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1; }
 }
 .era-midjourney {
   animation: era-midjourney-breathe 10s ease-in-out infinite;
