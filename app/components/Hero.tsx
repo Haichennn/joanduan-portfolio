@@ -45,13 +45,13 @@ export default function Hero() {
         {/* Segment 2 — Midjourney era: diffusion radial gradient + CSS-only noise texture */}
         <div className="relative era-midjourney">
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 opacity-70"
             style={{
-              background: `radial-gradient(ellipse at 50% 50%, var(--accent) 0%, var(--ink) 30%, transparent 70%)`,
+              background: `radial-gradient(ellipse at 50% 50%, var(--accent) 0%, var(--ink) 50%, transparent 95%)`,
             }}
           />
           <div
-            className="absolute inset-0 opacity-40 mix-blend-multiply"
+            className="absolute inset-0 opacity-50 mix-blend-multiply"
             style={{
               backgroundImage: `
                 radial-gradient(circle at 25% 30%, var(--ink) 0.5px, transparent 1px),
