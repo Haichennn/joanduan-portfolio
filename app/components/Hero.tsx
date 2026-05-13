@@ -42,24 +42,27 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Segment 2 — Midjourney era: diffusion radial gradient + noise */}
+        {/* Segment 2 — Midjourney era: diffusion radial gradient + CSS-only noise texture */}
         <div className="relative era-midjourney">
           <div
             className="absolute inset-0"
             style={{
-              background: `radial-gradient(circle at 50% 50%, var(--accent) 0%, var(--ink) 35%, transparent 75%)`,
+              background: `radial-gradient(ellipse at 50% 50%, var(--accent) 0%, var(--ink) 30%, transparent 70%)`,
             }}
           />
-          <svg className="absolute inset-0 w-full h-full opacity-50" xmlns="http://www.w3.org/2000/svg">
-            <filter id="midjourney-noise">
-              <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="3" />
-              <feColorMatrix values="0 0 0 0 0
-                                    0 0 0 0 0
-                                    0 0 0 0 0
-                                    0 0 0 0.6 0" />
-            </filter>
-            <rect width="100%" height="100%" filter="url(#midjourney-noise)" />
-          </svg>
+          <div
+            className="absolute inset-0 opacity-40 mix-blend-multiply"
+            style={{
+              backgroundImage: `
+                radial-gradient(circle at 25% 30%, var(--ink) 0.5px, transparent 1px),
+                radial-gradient(circle at 75% 70%, var(--ink) 0.5px, transparent 1px),
+                radial-gradient(circle at 50% 20%, var(--ink) 0.4px, transparent 0.8px),
+                radial-gradient(circle at 10% 80%, var(--ink) 0.4px, transparent 0.8px),
+                radial-gradient(circle at 90% 40%, var(--ink) 0.4px, transparent 0.8px)
+              `,
+              backgroundSize: "3px 3px, 4px 4px, 5px 5px, 6px 6px, 7px 7px",
+            }}
+          />
         </div>
 
         {/* Segment 3 — Claude Vision era: geometric guides + attention rect */}
