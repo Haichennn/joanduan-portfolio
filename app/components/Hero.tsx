@@ -3,28 +3,86 @@ import ParticleHaichen from "./ParticleHaichen";
 export default function Hero() {
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-[var(--base)]">
-      {/* Layer 0 — AI Vision Evolution background (three segments) */}
-      <div className="absolute inset-0 grid grid-cols-3 z-0">
-        {/* Segment 1 — CNN (placeholder block) */}
-        <div className="relative flex items-end justify-start p-6 bg-gradient-to-br from-[var(--ink)]/[0.04] to-[var(--ink)]/[0.08]">
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--mute)]/50">
-            01 · CNN
-          </span>
+      {/* Layer 0 — AI Vision Evolution background (three visual textures) */}
+      <div className="absolute inset-0 grid grid-cols-3 z-0 pointer-events-none overflow-hidden">
+
+        {/* Segment 1 — CNN era: pixelated mosaic */}
+        <div className="relative">
+          <div
+            className="absolute inset-0 opacity-[0.12]"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, var(--ink) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--ink) 1px, transparent 1px)
+              `,
+              backgroundSize: "14px 14px",
+            }}
+          />
+          <div className="absolute inset-0 opacity-[0.10] grid grid-cols-[repeat(auto-fill,14px)] grid-rows-[repeat(auto-fill,14px)]">
+            {Array.from({ length: 40 }).map((_, i) => {
+              const colors = ["var(--ink)", "var(--ink)", "var(--ink)", "var(--accent)"];
+              const color = colors[i % colors.length];
+              const top = (i * 37) % 90;
+              const left = (i * 53) % 95;
+              return (
+                <div
+                  key={i}
+                  className="absolute"
+                  style={{
+                    width: "14px",
+                    height: "14px",
+                    top: `${top}%`,
+                    left: `${left}%`,
+                    backgroundColor: color,
+                  }}
+                />
+              );
+            })}
+          </div>
         </div>
 
-        {/* Segment 2 — Midjourney (placeholder block) */}
-        <div className="relative flex items-end justify-center p-6 bg-gradient-to-br from-[var(--accent)]/[0.04] to-[var(--accent)]/[0.10]">
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--mute)]/50">
-            02 · MIDJOURNEY
-          </span>
+        {/* Segment 2 — Midjourney era: diffusion radial gradient + noise */}
+        <div className="relative era-midjourney">
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `radial-gradient(circle at 50% 50%, var(--accent) 0%, var(--ink) 35%, transparent 75%)`,
+            }}
+          />
+          <svg className="absolute inset-0 w-full h-full opacity-50" xmlns="http://www.w3.org/2000/svg">
+            <filter id="midjourney-noise">
+              <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="3" />
+              <feColorMatrix values="0 0 0 0 0
+                                    0 0 0 0 0
+                                    0 0 0 0 0
+                                    0 0 0 0.6 0" />
+            </filter>
+            <rect width="100%" height="100%" filter="url(#midjourney-noise)" />
+          </svg>
         </div>
 
-        {/* Segment 3 — Claude Vision (placeholder block) */}
-        <div className="relative flex items-end justify-end p-6 bg-gradient-to-br from-[var(--ink)]/[0.06] to-[var(--ink)]/[0.10]">
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--mute)]/50">
-            03 · CLAUDE VISION
-          </span>
+        {/* Segment 3 — Claude Vision era: geometric guides + attention rect */}
+        <div className="relative">
+          <div className="absolute inset-0 opacity-[0.12]">
+            <div className="absolute top-1/4 left-0 right-0 h-px bg-[var(--ink)]" />
+            <div className="absolute top-2/4 left-0 right-0 h-px bg-[var(--ink)]" />
+            <div className="absolute top-3/4 left-0 right-0 h-px bg-[var(--ink)]" />
+            <div className="absolute left-1/4 top-0 bottom-0 w-px bg-[var(--ink)]" />
+            <div className="absolute left-2/4 top-0 bottom-0 w-px bg-[var(--ink)]" />
+            <div className="absolute left-3/4 top-0 bottom-0 w-px bg-[var(--ink)]" />
+          </div>
+          <div
+            className="absolute era-claude-focus opacity-[0.35]"
+            style={{
+              top: "20%",
+              left: "15%",
+              width: "100px",
+              height: "60px",
+              border: "1px solid var(--accent)",
+            }}
+          />
         </div>
+
       </div>
 
       {/* Layer 0.5 — Soft veil so HAICHEN reads clearly over background */}
@@ -77,6 +135,25 @@ export default function Hero() {
         <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--mute)]">
           NOW <span className="text-[var(--accent)]/70">·</span> ingest <span className="text-[var(--accent)]/70">·</span> learn <span className="text-[var(--accent)]/70">·</span> ship
         </p>
+      </div>
+
+      {/* Timeline labels — Joan's personal-growth arc, one per background segment */}
+      <div className="absolute bottom-6 left-0 right-0 z-10 grid grid-cols-3 pointer-events-none px-8">
+        <div className="flex justify-center">
+          <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[var(--mute)]/70">
+            <span className="text-[var(--accent)]/60 mr-2">·</span>perception
+          </span>
+        </div>
+        <div className="flex justify-center">
+          <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[var(--mute)]/70">
+            <span className="text-[var(--accent)]/60 mr-2">·</span>comprehension
+          </span>
+        </div>
+        <div className="flex justify-center">
+          <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[var(--mute)]/70">
+            <span className="text-[var(--accent)]/60 mr-2">·</span>composition
+          </span>
+        </div>
       </div>
     </section>
   );

@@ -59,3 +59,24 @@ body {
     badge-sway-idle 4s ease-in-out 1.6s infinite;
   transform-origin: top center;
 }
+
+/* AI Vision Evolution — visual texture animations */
+
+@keyframes era-midjourney-breathe {
+  0%, 100% { opacity: 0.10; }
+  50%      { opacity: 0.18; }
+}
+.era-midjourney {
+  animation: era-midjourney-breathe 10s ease-in-out infinite;
+}
+
+@keyframes era-claude-focus-1 {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(60px, 30px); }
+  50%  { transform: translate(20px, 80px); }
+  75%  { transform: translate(80px, 50px); }
+  100% { transform: translate(0, 0); }
+}
+.era-claude-focus {
+  animation: era-claude-focus-1 12s ease-in-out infinite;
+}
