@@ -35,63 +35,60 @@ export const knowledgeBase: KnowledgeChunk[] = [
   {
     id: 'project-wayback',
     type: 'project',
-    text: `WayBack — Context-Aware Tourism Re-Finding App (May-June 2026)
+    text: `WayBack — Context-Aware Tourism Re-Finding App (April–June 2026)
 
 ## SITUATION
 
-TUM coursework project (Group W4) implementing Sappelli et al. 2017 "Context-Aware Recommendation" for a mobile tourism use case. Two-person team, 6-week deadline. The paper proposes three recommendation methods (CBR, JITIR, CIA) but evaluates them only in a desktop knowledge-worker setting. We had to adapt the framework to mobile tourism re-finding — the task of resurfacing places a user already saved, at the moment they become relevant again.
+TUM coursework project (Group W4) adapting Sappelli et al. 2017 "Context-Aware Recommendation" to a mobile tourism use case. Two-person team, 10-week timeline. The paper proposes three recommendation methods (CBR, JITIR, CIA) evaluated against four criteria (§4.3–§4.6), but only studies them offline in a desktop knowledge-worker setting. We had to adapt the framework to mobile tourism re-finding — resurfacing places a user already saved, at the moment they become relevant again.
 
 ## TASK
 
-I owned the entire frontend, solo. My teammate owned the backend (Flask, recommendation algorithm implementation, Railway deployment). My job: turn three paper-described algorithms into an interface a real tourist would actually use on their phone — and make the four-criterion evaluation framework (Section 4) visible to users without academic jargon.
+I own the entire frontend, solo. My teammate owns backend (Flask, recommendation algorithm implementations, evaluation pipeline, Railway deployment). My job: turn three paper-described algorithms into an interface a tourist would actually use on their phone — and make the four-criterion evaluation framework visible to users without academic jargon. Mid-project I also redesigned my contribution model to keep ownership legible when working rhythms diverged across the team.
 
 ## ACTION
 
 I shipped a production frontend in React 19 / TypeScript / Tailwind / Vite, deployed on Vercel, integrating with my teammate's REST API.
 
-Specific things I built and decided:
+Four substantial features I shipped:
 
-**Challenge 1**: Backend ranking is fixed per method, but real users care about "what's relevant right now." Weather, time-of-day, and current activity should reorder results.
-**Decision**: I built a client-side contextBoost() layer that re-ranks within top results based on live Munich weather (Open-Meteo API) and current hour. Cafés boost in morning, bars at night, museums when it rains, parks on sunny afternoons. Multipliers are gentle (0.5-1.6) so the backend's algorithm still drives broad order — context only reorders within top results. Trade-off documented: this is a UX layer, not a method change — the academic evaluation still uses the paper's pure methods.
+**Feature 1 — Explanation Breakdown component.** Surfaces the paper's four §4 evaluation criteria as user-facing UI signals on every recommendation: "Right here" (context relevance, §4.3, computed via haversine distance), "Good time of day" (document relevance, §4.4, computed via category × hour-of-day fit), "Likely your next stop" (action prediction, §4.5, computed via a client-side proxy combining proximity + recency + view frequency), "Worth revisiting" (diversity, §4.6, computed via low view count). Each signal renders with a three-level strength meter. A methodology modal — opened via "How we picked these signals" — explicitly cites paper sections and documents where my client-side proxies extend the paper's framework. Two-layer pattern: plain-English for users, paper attribution for accountability.
 
-**Challenge 2**: How to make the W4 brief's "proactively recommend based on current situation" requirement principled, not just a notification spam machine.
-**Decision**: I built a composite-signal evaluator mapping the paper's four evaluation criteria (Sections 4.3-4.6) to client-side signals: action prediction (CIA score), context relevance (haversine proximity), document relevance (category × time-of-day fit), diversity (low view count = under-surfaced item). Banner fires only when action prediction AND at least one other signal align. Mapped each firing pattern to backend reason vocabulary so banner text stays consistent with in-list explanations and detail panel.
+**Feature 2 — Proactive notification with composite signal gate.** The W4 brief requires proactive recommendations — surfacing items without explicit user query. Naive single-threshold approaches either spam in dense areas or stay silent. I built a composite-signal evaluator: CIA score must clear 0.35 (action prediction baseline) AND at least one of {proximity < 500m, category-time-of-day fit, under-surfaced item} must fire. The gate mirrors the paper's §4 argument that no single criterion captures recommendation quality. Banner polls every 30s, persists dismissals via localStorage, maps each firing pattern to backend explanation vocabulary so banner text stays consistent with in-list explanations.
 
-**Challenge 3**: Free transit routing APIs (Transitous community MOTIS instance) are unreliable for demos. OSRM only handles foot/bike/car.
-**Decision**: I hand-curated 13 Munich transit destination zones from real MVV data — each with realistic itineraries (lines, transfers, ride times). Routes pieced together at runtime from these zones plus final-mile walking. Fake-but-realistic > broken-real for a demo. Documented the swap-in path in code comments so a future production team knows how to upgrade.
+**Feature 3 — Method Comparison view.** The paper's central contribution is comparing three methods (CBR/JITIR/CIA) under shared context. The default UI only let users switch one method at a time — the comparison was invisible. I shipped a three-column side-by-side view with three context presets (Morning at Marienplatz, Afternoon at Englischer Garten, Evening at Hauptbahnhof). Switching context rearranges all three rankings visibly. A methodology modal explains each algorithm with §5.1/§5.2/§5.3 references. The paper's central comparison becomes a live interactive surface, not just an offline evaluation.
 
-**Challenge 4**: How to surface the paper's evaluation framework to users without overwhelming them.
-**Decision**: Two-layer UI. Default state shows 4 plain-English signals on the detail panel ("Right here / Good time of day / Likely your next stop / Worth revisiting"). "How we picked these signals" button opens a modal with explicit Section §4.3-§4.6 citations explaining each signal's paper origin. Users get the simple version; reviewers get the academic version.
+**Feature 4 — Independent component architecture.** Mid-project, working rhythms across the team diverged. Rather than escalate or mirror the pattern, I redesigned my contribution surface: every paper-faithful feature ships as a self-contained component under \`frontend/src/components/\` — one author per file, paper-section-cited commit messages, explicit ownership boundaries documented in writing. The architecture itself became a coordination mechanism — clear file structure substituting for difficult conversation. Ownership stays legible from the codebase, regardless of working rhythm. This is the systems-thinking move that I'm most proud of from the project.
 
-**Challenge 5**: Mobile gesture conflicts — swipe-to-dismiss recommendations vs vertical scrolling vs detail panel swipe-to-flip.
-**Decision**: Custom pointer handlers that lock to horizontal or vertical on the first 10px of movement. Mouse events excluded (touch/pen only). Pure taps (no movement past 10px) fire onTap, drags past 100px dismiss. Documented the lock logic so the next developer doesn't accidentally break it.
+**Other things I built**: Mobile gesture handlers with horizontal/vertical lock on first 10px (custom pointer logic, mouse excluded from swipe). Flipbook detail panel with chevron + swipe navigation. Draggable bottom sheet (Apple Maps style) with free-drag bounds. Hand-curated 13-zone Munich transit dataset built from real MVV routes (free routing APIs are too unreliable for demos — documented swap-in path for production). Dark/light theme toggle. Live weather + time pill via Open-Meteo. 4-mode route summary.
 
-**Other things I built**: Flipbook detail panel with chevron + swipe navigation between saved places. Draggable bottom sheet (Apple Maps style) with free-drag bounds rather than snap points. Method comparison view (three columns × three context presets) demonstrating the paper's central comparison. Dark/light theme toggle. Live weather + time pill. 4-mode route summary with per-mode times shown upfront.
-
-**Deliberate non-ownership**: I did not implement the recommendation algorithms (CBR/JITIR/CIA), the Flask backend, the SQLAlchemy models, or the Railway deployment. My teammate did all of that. I read their algorithm code to inform UX decisions (which signals to surface, which methods to label "Near me / From history / For this moment") — but I integrated with their API, I didn't own their domain.
+**Deliberate non-ownership**: I did not implement the recommendation algorithms (CBR/JITIR/CIA), Flask backend, SQLAlchemy models, or Railway deployment. My teammate owns that. I read their algorithm code to inform UX decisions but integrated with their API — I respected their domain.
 
 ## RESULT
 
-A frontend that makes a 2017 academic paper feel like a 2026 consumer mobile app, while preserving methodological transparency. The four-criterion evaluation framework is visible to users via the Explanation Breakdown component. The proactive notification system implements the W4 brief's composite-signal requirement using paper-derived criteria. Live by June 11, 2026.
+A frontend that makes a 2017 academic paper feel like a 2026 consumer mobile app, while preserving methodological transparency. The four-criterion evaluation framework is visible in the live UI via the Explanation Breakdown. The proactive notification implements the W4 brief's composite-signal requirement using paper-derived criteria. The Method Comparison view makes the paper's central three-method comparison interactive. Ownership architecture kept individual contributions legible from git history through mid-project coordination drift.
+
+Live by June 11, 2026. ~3,500 lines of React across 3 dedicated component files plus integrated proactive logic in MapPage.jsx. Live demo at wayback-beige.vercel.app.
 
 ## WHAT I LEARNED
 
-- Frontend can make rigid backends feel adaptive without changing the backend. contextBoost is a 30-line function that does more for UX than rewriting the recommendation algorithm would.
-- "Production" means designing for the demo failure modes too — the curated transit data is more "production" than calling a flaky free API in front of evaluators.
-- Documenting trade-offs in code comments is a senior-engineer move that costs nothing. Anyone reading my code knows what I knew and chose.
+- Translating research into product isn't about implementing the algorithm — it's about making the evaluation framework legible. The four signals, the composite gate, the comparison view: each is a UI artifact that lets a non-technical reader (user, recruiter, compliance reviewer) read what the system optimizes for.
+- Architectural decisions can substitute for difficult conversations. When file ownership is self-evident from the codebase, coordination becomes lower-stakes. I'd treat "how do we ship without overwriting each other" as a Week 1 design choice on the next project, not a Week 5 response.
+- Documenting trade-offs in code comments is a senior-engineer move that costs nothing. Anyone reading my code knows what I knew and chose — including where my client-side proxies extend the paper's framework versus where they implement it directly.
 - Knowing what NOT to own matters as much as knowing what to own. I'm a better collaborator because I respect my teammate's domain.
 
 ## WHAT I CAN CONTRIBUTE
 
-- I shipped thousands of lines of production-grade React for WayBack solo in 6 weeks: design system, gesture patterns, paper-aligned signal evaluation, transit data engineering, API integration, deployment. I'm a frontend specialist who can carry the entire user-facing surface of a small product.
+- I shipped four paper-faithful production-grade React features solo across 10 weeks: paper-aligned signal evaluation, gesture systems, comparison UI with parallel API orchestration, ownership architecture. I can carry the entire user-facing surface of a small product.
+- I translate academic frameworks into consumer UX without losing the rigor. WayBack makes a research paper feel like an app — useful for any AI product turning research into something users trust.
 - I bring product thinking into engineering decisions: every UI choice in WayBack is justified against a user-facing metric ("would a tourist understand this?"), not just code correctness.
-- I integrate well with backend specialists. I read their code well enough to design UX that respects their constraints, but I don't try to own their domain.
-- I translate academic frameworks into consumer UX without losing the rigor. WayBack makes a research paper feel like an app — useful for any AI startup turning research into product.`,
+- I design for cross-functional coordination, not just code correctness. When team rhythms diverge, I redesign architecture to keep ownership legible — a systems move, not an interpersonal one.
+- I integrate well with backend specialists. I read their code well enough to design UX that respects their constraints, but I don't try to own their domain.`,
     metadata: {
       topic_tags: ['WayBack', 'project', 'frontend', 'React', 'Tailwind',
                    'Vite', 'TypeScript', 'Leaflet', 'mobile', 'production',
                    'Vercel', 'context-aware', 'tourism', 'recommendation-system',
-                   'paper-implementation', 'mobile-gestures'],
+                   'paper-implementation', 'mobile-gestures', 'paper-faithful',
+                   'coordination-architecture', 'independent-components'],
       skills_demonstrated: ['React-19', 'TypeScript', 'Tailwind-CSS', 'Vite',
                            'Leaflet-maps', 'mobile-gesture-design',
                            'API-integration', 'production-deployment',

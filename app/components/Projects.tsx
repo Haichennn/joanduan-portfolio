@@ -333,8 +333,8 @@ const projects = [
     category: "ENGINEERING / FRONTEND",
     title: "WayBack",
     description:
-      "A context-aware re-finding web app for tourists — surfacing the places you saved at the moment they become relevant. Sole frontend on a 2-person team, with AI-generated place descriptions and explainable recommendations across three ranking methods.",
-    tags: ["React 19", "Vite", "Tailwind", "Leaflet", "Claude API"],
+      "A context-aware re-finding web app for tourists — surfacing places you saved at the moment they become relevant. Sole frontend on a 2-person team. Built four paper-faithful features that translate a 2017 academic recommendation framework into UI signals users can actually read.",
+    tags: ["React 19", "Vite", "Tailwind", "Leaflet", "TypeScript"],
     status: "live" as const,
     year: "2026.04 – 2026.06",
     liveUrl: "/projects/wayback",

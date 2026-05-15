@@ -21,7 +21,7 @@ export default function WayBackPage() {
             WayBack
           </h1>
           <p className="font-sans text-lg md:text-xl text-[var(--ink)]/75 leading-relaxed max-w-2xl">
-            A context-aware re-finding web app for tourists — surfacing the places you saved at the moment they become relevant, with AI explanations users can trust.
+            A context-aware re-finding web app for tourists — surfacing the places you saved at the moment they become relevant, by translating a 2017 research paper&apos;s evaluation framework into UI signals users can actually read.
           </p>
 
           <div className="mt-12 flex flex-wrap gap-x-12 gap-y-4">
@@ -30,7 +30,7 @@ export default function WayBackPage() {
                 Role
               </p>
               <p className="font-sans text-sm text-[var(--ink)]">
-                Frontend Lead, 2-person team
+                Sole Frontend Developer, 2-person team
               </p>
             </div>
             <div>
@@ -54,7 +54,7 @@ export default function WayBackPage() {
                 Stack
               </p>
               <p className="font-sans text-sm text-[var(--ink)]">
-                React 19 · Vite · Tailwind · Leaflet · Claude API
+                React 19 · Vite · Tailwind · Leaflet · TypeScript
               </p>
             </div>
             <div>
@@ -87,47 +87,52 @@ export default function WayBackPage() {
             The premise.
           </h2>
           <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed mb-6 max-w-2xl">
-            Travelers save dozens of places — restaurants, museums, viewpoints — but forget what they saved by day three. The challenge isn&apos;t discovering new places. It&apos;s re-finding saved ones at the right moment, based on context.
+            Travelers save dozens of places — restaurants, museums, viewpoints — but forget what they saved by day three. The challenge isn&apos;t discovering new places. It&apos;s re-finding saved ones at the right moment, based on context (location, time, recent activity).
           </p>
           <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed mb-6 max-w-2xl">
-            Our 10-week goal: build a working prototype that implements three academic ranking methods, then make them legible enough that users actually trust the recommendations.
+            The deeper problem isn&apos;t memory — it&apos;s <em>trust</em>. Users won&apos;t act on a recommendation they don&apos;t understand. The 2017 paper we&apos;re adapting (Sappelli et al.) defines four evaluation criteria for recommendation quality, but only measures them offline. My job: make those four criteria visible inside the live product, without academic jargon.
           </p>
         </section>
 
         <section>
           <h2 className="font-display text-3xl text-[var(--ink)] tracking-tight mb-6 mt-16">
-            Three decisions that shaped the build.
+            Four decisions that shaped the build.
           </h2>
 
           <div className="space-y-10 mt-10">
             <div className="border-l border-[var(--ink)]/15 pl-6">
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] mb-3">
-                Decision 01 — Picking the right AI for the moment
+                Decision 01 — Paper criteria as UI signals
               </p>
               <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed">
-                Claude Haiku at 100 tokens for an inline place description, not GPT-4 at 500 tokens. AI integration isn&apos;t “use the most powerful model” — it&apos;s choosing the right cost / latency / quality point for the specific moment.
+                Built an Explanation Breakdown component that surfaces the paper&apos;s four §4 evaluation criteria as plain-English signals on every recommendation: <em>Right here</em> (context relevance, §4.3), <em>Good time of day</em> (document relevance, §4.4), <em>Likely your next stop</em> (action prediction, §4.5), <em>Worth revisiting</em> (diversity, §4.6). A methodology modal — opened via &ldquo;How we picked these signals&rdquo; — explicitly cites paper sections and acknowledges where my client-side proxies extend the paper&apos;s framework.
               </p>
             </div>
 
             <div className="border-l border-[var(--ink)]/15 pl-6">
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] mb-3">
-                Decision 02 — Making algorithms legible
+                Decision 02 — Composite signal gate for proactive notifications
               </p>
               <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed">
-                Backend returns reason codes like{" "}
-                <code className="font-mono text-sm bg-[var(--ink)]/5 px-1.5 py-0.5">
-                  nearby_and_recent_save
-                </code>
-                . Frontend translates: “180m away · saved 6 days ago.” A five-pattern mapping layer that scales — same architecture works for a recommendation algorithm, a risk score, or a fraud classifier.
+                The W4 brief requires <em>proactive</em> recommendations — surfacing items without explicit user query. Naive single-threshold approaches either spam in dense areas or stay silent. I built a composite-signal evaluator: CIA score must clear a minimum bar <em>and</em> at least one of {`{proximity, time-of-day fit, under-surfaced}`} must fire. The gate mirrors the paper&apos;s &ldquo;no single criterion captures quality&rdquo; argument from §4.
               </p>
             </div>
 
             <div className="border-l border-[var(--ink)]/15 pl-6">
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] mb-3">
-                Decision 03 — Designing for partial backend
+                Decision 03 — The paper&apos;s comparison, made interactive
               </p>
               <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed">
-                Co-authored a 5-page API contract with my partner before either of us wrote implementation code. Loading / empty / error states wired into every endpoint from day one, not retrofitted. At the demo, several endpoints were still catching up — the frontend held.
+                The paper&apos;s core contribution is comparing three methods (CBR / JITIR / CIA) under shared context. The original UI only let users switch one at a time — the comparison was invisible. I shipped a Method Comparison view: three columns side-by-side, three context presets (Morning at Marienplatz, Afternoon at Englischer Garten, Evening at Hauptbahnhof). Switching context rearranges all three rankings visibly. The paper&apos;s central comparison becomes a live, interactive surface.
+              </p>
+            </div>
+
+            <div className="border-l border-[var(--ink)]/15 pl-6">
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] mb-3">
+                Decision 04 — Independent components as ownership architecture
+              </p>
+              <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed">
+                Mid-project, working rhythms across the team diverged. Rather than escalate or mirror the pattern, I redesigned my contribution surface: every new paper-faithful feature ships as a self-contained component under <code className="font-mono text-sm bg-[var(--ink)]/5 px-1.5 py-0.5">frontend/src/components/</code> — one author per file, paper-section-cited commit messages, explicit ownership boundaries documented in writing. The architecture itself became the coordination mechanism. Ownership stayed legible regardless of working rhythm.
               </p>
             </div>
           </div>
@@ -138,10 +143,13 @@ export default function WayBackPage() {
             What I&apos;m taking from it.
           </h2>
           <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed mb-6 max-w-2xl">
-            Technical implementation and business thinking aren&apos;t separate phases — they&apos;re the same thinking. Choosing Haiku over GPT-4 was a cost-per-user decision, not a latency one. Designing reason-codes was about whether users would trust the algorithm, not UI text. Every technical call was a product call.
+            Translating research into product isn&apos;t about implementing the algorithm — it&apos;s about making the <em>evaluation framework</em> legible. The four signals, the composite gate, the side-by-side comparison: each is a UI artifact that lets a non-technical user (or a recruiter, or a compliance reviewer) read what the system is actually optimizing for. Same pattern works for any AI surface that needs to be legible to people who don&apos;t read the source paper.
+          </p>
+          <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed mb-6 max-w-2xl">
+            The second lesson was structural: architectural decisions can substitute for difficult conversations. When file ownership is self-evident from the codebase, coordination becomes lower-stakes. I&apos;d treat that as a Week 1 design choice on the next project, not a Week 5 response.
           </p>
           <blockquote className="border-l-2 border-[var(--accent)] pl-6 italic text-[var(--ink)]/70 my-8 font-sans">
-            “Did you talk to five users?” is the question I want to ask of every product I touch from now on.
+            &ldquo;Did you talk to five users?&rdquo; is the question I want to ask of every product I touch from now on.
           </blockquote>
         </section>
 
@@ -153,7 +161,7 @@ export default function WayBackPage() {
             The 10-week version — with screenshots, code, and the decision trail.
           </h3>
           <p className="font-sans text-base text-[var(--ink)]/75 leading-relaxed mb-6 max-w-xl">
-            Three decisions in detail. The reason-code mapping table. Real screenshots from the working prototype. Reflection on what I&apos;d do differently.
+            Four decisions in detail. Code snippets from the composite signal gate. Real screenshots from the working prototype. Reflection on what I&apos;d do differently.
           </p>
           <a
             href="https://hammerhead-shroud-dfb.notion.site/d23dbce17d1b42f2a70595a01c9a9c66?v=35ab994f958b805d971b000cce266f82"
