@@ -284,7 +284,7 @@ function IDBadge() {
                 </svg>
               </a>
               <a
-                href="https://www.linkedin.com/in/haichen-duan"
+                href="https://www.linkedin.com/in/haichen-duan-6689192a7/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
@@ -296,7 +296,7 @@ function IDBadge() {
                 </svg>
               </a>
               <a
-                href="mailto:haichen.duan@tum.de"
+                href="mailto:haic.duan@gmail.com"
                 aria-label="Email"
                 className="text-[var(--ink)]/70 hover:text-[var(--accent)] transition-colors"
                 onClick={(e) => e.stopPropagation()}

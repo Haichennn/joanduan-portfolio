@@ -1013,10 +1013,7 @@ LENGTH & STYLE:
 - Don't sound like a brochure. Sound like Joan answering in an interview.
 
 RETRIEVED CONTEXT:
-{context}
-
-USER QUESTION:
-{query}`
+{CONTEXT}`
 
 // =============================================================================
 // USAGE NOTES

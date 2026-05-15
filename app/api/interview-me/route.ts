@@ -11,7 +11,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import knowledgeBase from "../../lib/knowledge-base-embedded.json";
-import { SYSTEM_PROMPT_TEMPLATE, CONTACT_INFO } from "../../lib/knowledge-base-raw";
+import { SYSTEM_PROMPT_TEMPLATE } from "../../lib/knowledge-base-raw";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -113,15 +113,12 @@ export async function POST(request: Request) {
     // Step 1: Embed query
     const queryEmbedding = await embedQuery(query, voyageKey);
 
-    // Step 2: Retrieve top 3 chunks
-    const topChunks = retrieveTopK(queryEmbedding, 3);
+    // Step 2: Retrieve top 5 chunks
+    const topChunks = retrieveTopK(queryEmbedding, 5);
     const contextBlock = buildContextBlock(topChunks);
 
     // Step 3: Build grounded system prompt
-    const systemPrompt = SYSTEM_PROMPT_TEMPLATE.replace(
-      "{CONTEXT}",
-      contextBlock
-    ).replace("{CONTACT_EMAIL}", CONTACT_INFO.email);
+    const systemPrompt = SYSTEM_PROMPT_TEMPLATE.replace("{CONTEXT}", contextBlock);
 
     // Step 4: Stream from Claude
     const anthropic = new Anthropic({ apiKey: anthropicKey });

@@ -247,7 +247,7 @@ export default function InterviewMe() {
           </form>
 
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--mute)] mt-4">
-            Can&apos;t find what you need? Email{" "}
+            Liked what I said? Reach out at{" "}
             <a
               href="mailto:haic.duan@gmail.com"
               className="text-[var(--accent)] hover:opacity-80 normal-case tracking-normal"
