@@ -146,6 +146,7 @@ const sections = [
   { id: "about", label: "ABOUT" },
   { id: "experience", label: "EXPERIENCE" },
   { id: "projects", label: "PROJECTS" },
+  { id: "data-lab", label: "DATA LAB" },
   { id: "interview", label: "INTERVIEW" },
 ];
 
