@@ -148,7 +148,7 @@ export default function WayBackPage() {
           <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed mb-6 max-w-2xl">
             The second lesson was structural: architectural decisions can substitute for difficult conversations. When file ownership is self-evident from the codebase, coordination becomes lower-stakes. I&apos;d treat that as a Week 1 design choice on the next project, not a Week 5 response.
           </p>
-          <blockquote className="border-l-2 border-[var(--accent)] pl-6 italic text-[var(--ink)]/70 my-8 font-sans">
+          <blockquote className="border border-[var(--accent)] p-6 italic text-[var(--ink)]/70 my-8 font-display text-lg leading-relaxed">
             &ldquo;Did you talk to five users?&rdquo; is the question I want to ask of every product I touch from now on.
           </blockquote>
         </section>

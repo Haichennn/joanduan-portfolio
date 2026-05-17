@@ -20,7 +20,7 @@ export default function Experience() {
       <div className="max-w-6xl mx-auto">
         <header className="mb-12 md:mb-16">
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--mute)] mb-6 md:mb-8">
-            — EXPERIENCE —
+            <span aria-hidden="true">– </span>EXPERIENCE<span aria-hidden="true"> –</span>
           </p>
           <h2 className="font-display text-4xl md:text-5xl text-[var(--ink)] leading-[1.1] tracking-tight">
             Where the resume lives.
@@ -28,7 +28,7 @@ export default function Experience() {
         </header>
 
         <div className="space-y-12">
-          <article className="border-l-2 border-[var(--accent)] pl-6 md:pl-8 max-w-3xl">
+          <article className="pl-6 md:pl-8 max-w-3xl">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--mute)] mb-2">
               2024 — 2025
             </p>
@@ -41,42 +41,42 @@ export default function Experience() {
 
             <ul className="space-y-3 mb-6">
               <li className="font-sans text-base text-[var(--ink)]/85 leading-relaxed flex gap-3">
-                <span className="text-[var(--accent)] flex-shrink-0">—</span>
+                <span className="text-[var(--accent-small)] flex-shrink-0">—</span>
                 <span>
                   Grew creator channel from obscurity to 1.6M followers across
                   Bilibili and Douyin
                 </span>
               </li>
               <li className="font-sans text-base text-[var(--ink)]/85 leading-relaxed flex gap-3">
-                <span className="text-[var(--accent)] flex-shrink-0">—</span>
+                <span className="text-[var(--accent-small)] flex-shrink-0">—</span>
                 <span>
                   Lifted per-video engagement from sub-10K to 200K+ likes
                   through data-driven content iteration
                 </span>
               </li>
               <li className="font-sans text-base text-[var(--ink)]/85 leading-relaxed flex gap-3">
-                <span className="text-[var(--accent)] flex-shrink-0">—</span>
+                <span className="text-[var(--accent-small)] flex-shrink-0">—</span>
                 <span>
                   Directed end-to-end video production (editing, cinematography,
                   post-production) across 200+ videos
                 </span>
               </li>
               <li className="font-sans text-base text-[var(--ink)]/85 leading-relaxed flex gap-3">
-                <span className="text-[var(--accent)] flex-shrink-0">—</span>
+                <span className="text-[var(--accent-small)] flex-shrink-0">—</span>
                 <span>
                   Built and ran fan community across group chats and DMs;
                   managed audience feedback loops feeding into content strategy
                 </span>
               </li>
               <li className="font-sans text-base text-[var(--ink)]/85 leading-relaxed flex gap-3">
-                <span className="text-[var(--accent)] flex-shrink-0">—</span>
+                <span className="text-[var(--accent-small)] flex-shrink-0">—</span>
                 <span>
                   Owned engagement analytics; translated audience signals into
                   editorial and production decisions
                 </span>
               </li>
               <li className="font-sans text-base text-[var(--ink)]/85 leading-relaxed flex gap-3">
-                <span className="text-[var(--accent)] flex-shrink-0">—</span>
+                <span className="text-[var(--accent-small)] flex-shrink-0">—</span>
                 <span>
                   Two-person operational team — full content stack ownership
                   from ideation through publish
@@ -102,7 +102,7 @@ export default function Experience() {
             <a
               href="#projects"
               onClick={handleRelatedProjectClick}
-              className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] border-b border-[var(--accent)] pb-0.5 hover:gap-3 transition-all duration-200 cursor-pointer"
+              className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent-small)] border-b border-[var(--accent)] pb-0.5 hover:gap-3 transition-all duration-200 cursor-pointer"
             >
               An afterthought project this experience sparked
               <span>→</span>

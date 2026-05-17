@@ -67,7 +67,7 @@ function LabCard({ item }: { item: LabItem }) {
   return (
     <article className="group border border-[var(--ink)]/10 bg-[var(--base)] p-6 md:p-7 flex flex-col">
       <div className="flex items-center justify-between mb-5">
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)]">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent-small)]">
           DATA / ANALYTICS
         </p>
         <StatusDot status={item.status} />
@@ -158,7 +158,7 @@ export default function DataLab() {
         <div className="border-t border-[var(--ink)]/10 pt-16 md:pt-20">
           <header className="mb-12 md:mb-16">
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[var(--mute)] mb-5">
-              — DATA LAB —
+              <span aria-hidden="true">– </span>DATA LAB<span aria-hidden="true"> –</span>
             </p>
             <h2 className="font-display text-3xl md:text-4xl text-[var(--ink)] leading-[1.1] tracking-tight mb-4">
               Smaller experiments.

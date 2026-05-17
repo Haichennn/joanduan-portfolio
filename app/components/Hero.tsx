@@ -114,13 +114,13 @@ export default function Hero() {
 
         {/* Tagline footer */}
         <div className="flex items-center justify-center gap-10 md:gap-12 mt-16">
-          <span className="font-mono text-[11px] tracking-[0.08em] uppercase text-[var(--accent)]">
+          <span className="font-mono text-[11px] tracking-[0.08em] uppercase text-[var(--accent-small)]">
             [BUILDER]
           </span>
-          <span className="font-mono text-[11px] tracking-[0.08em] uppercase text-[var(--accent)]">
+          <span className="font-mono text-[11px] tracking-[0.08em] uppercase text-[var(--accent-small)]">
             [CREATOR-LITERATE]
           </span>
-          <span className="font-mono text-[11px] tracking-[0.08em] uppercase text-[var(--accent)]">
+          <span className="font-mono text-[11px] tracking-[0.08em] uppercase text-[var(--accent-small)]">
             [AI-NATIVE]
           </span>
         </div>
@@ -129,7 +129,7 @@ export default function Hero() {
       {/* Layer 2 — Floating status labels */}
       {/* Top-right: version tag */}
       <div className="absolute top-6 right-6 md:top-8 md:right-10 z-20">
-        <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--accent)]">
+        <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--accent-small)]">
           joanduan.dev <span className="text-[var(--accent)]/70">·</span> v0.3
         </p>
       </div>

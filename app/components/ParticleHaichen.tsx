@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import * as Tone from "tone";
 
 const PARTICLE_COUNT_DESKTOP = 12000;
 const PARTICLE_COUNT_MOBILE = 3800;
@@ -11,21 +10,6 @@ const RETURN_STRENGTH = 0.08;
 const FRICTION = 0.86;
 const ENTRANCE_DURATION_MS = 2000;
 const PARTICLE_SIZE = 1.5;
-
-const CLAIR_DE_LUNE: [string, string][] = [
-  ["F5", "4n"],
-  ["Ab5", "4n"],
-  ["F5", "4n"],
-  ["Db5", "2n"],
-  ["F5", "4n"],
-  ["Ab5", "4n"],
-  ["Db6", "4n"],
-  ["C6", "2n"],
-  ["Bb5", "4n"],
-  ["Ab5", "4n"],
-  ["F5", "4n"],
-  ["Eb5", "2n"],
-];
 
 type Particle = {
   x: number;
@@ -45,15 +29,28 @@ export default function ParticleHaichen() {
   const particlesRef = useRef<Particle[]>([]);
   const mouseRef = useRef({ x: -9999, y: -9999, active: false });
   const entranceStartRef = useRef<number | null>(null);
+  // Tracks the user's prefers-reduced-motion preference. When true, particles
+  // are positioned at their target text coordinates on first paint, and the
+  // rAF tick loop paints once and stops — no scatter reveal, no return-spring,
+  // no ongoing animation of any kind. State is read synchronously on first
+  // client render so the very first paint already respects the preference,
+  // and subscribed for runtime OS-level toggles. The ref mirror lets the
+  // tick closure read the latest value without closure recreation. Per
+  // PRODUCT.md §Accessibility + DESIGN.md Do's.
+  const [reducedMotion, setReducedMotion] = useState(() =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+  const reducedMotionRef = useRef(reducedMotion);
+  reducedMotionRef.current = reducedMotion;
 
-  const synthRef = useRef<Tone.PolySynth | null>(null);
-  const reverbRef = useRef<Tone.Reverb | null>(null);
-  const loopRef = useRef<Tone.Loop | null>(null);
-  const audioUnlockedRef = useRef(false);
-  const isPlayingRef = useRef(false);
-  const fadeOutTimerRef = useRef<number | null>(null);
-
-  const [audioUnlocked, setAudioUnlocked] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -141,9 +138,14 @@ export default function ParticleHaichen() {
         const sx = rect.width / 2 + Math.cos(angle) * dist;
         const sy = rect.height / 2 + Math.sin(angle) * dist;
         const color = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+        // When reduced motion is set, particles start AT their target text
+        // positions — no scatter, no reveal animation, no return-spring
+        // journey. The disperse-coalesce sweep is bypassed entirely.
+        const initialX = reducedMotionRef.current ? pixel.x : sx;
+        const initialY = reducedMotionRef.current ? pixel.y : sy;
         particles.push({
-          x: sx,
-          y: sy,
+          x: initialX,
+          y: initialY,
           vx: 0,
           vy: 0,
           tx: pixel.x,
@@ -155,7 +157,12 @@ export default function ParticleHaichen() {
       }
 
       particlesRef.current = particles;
-      entranceStartRef.current = performance.now();
+      // When reduced-motion is set, backdate the entrance start so that
+      // the next tick computes entranceProgress >= 1 and renders particles
+      // at their target positions immediately — no scatter reveal.
+      entranceStartRef.current = reducedMotionRef.current
+        ? performance.now() - ENTRANCE_DURATION_MS - 1
+        : performance.now();
     }
 
     setupParticles();
@@ -170,7 +177,7 @@ export default function ParticleHaichen() {
       window.removeEventListener("resize", handleResize);
       clearTimeout(resizeTimer);
     };
-  }, []);
+  }, [reducedMotion]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -181,13 +188,11 @@ export default function ParticleHaichen() {
       mouseRef.current.x = e.clientX - rect.left;
       mouseRef.current.y = e.clientY - rect.top;
       mouseRef.current.active = true;
-      startMelodyIfUnlocked();
     }
     function onLeave() {
       mouseRef.current.active = false;
       mouseRef.current.x = -9999;
       mouseRef.current.y = -9999;
-      fadeOutMelody();
     }
 
     container.addEventListener("mousemove", onMove);
@@ -268,128 +273,37 @@ export default function ParticleHaichen() {
       }
 
       ctx.restore();
+      // Reduced-motion: particles are already at their target positions
+      // (placed there in setupParticles). Paint once, then stop the rAF
+      // loop entirely. No further animation runs for the rest of the
+      // session unless the user toggles their motion preference — which
+      // re-triggers this effect via the reducedMotion dependency below.
+      if (reducedMotionRef.current) {
+        return;
+      }
       animationId = requestAnimationFrame(tick);
     }
 
     tick();
     return () => cancelAnimationFrame(animationId);
-  }, []);
-
-  useEffect(() => {
-    async function unlock() {
-      if (audioUnlockedRef.current) return;
-      try {
-        await Tone.start();
-
-        const reverb = new Tone.Reverb({ decay: 4, wet: 0.55 }).toDestination();
-        const synth = new Tone.PolySynth(Tone.FMSynth, {
-          harmonicity: 3,
-          modulationIndex: 8,
-          envelope: { attack: 0.01, decay: 0.6, sustain: 0.05, release: 1.8 },
-          modulationEnvelope: {
-            attack: 0.01,
-            decay: 0.4,
-            sustain: 0,
-            release: 0.4,
-          },
-        }).connect(reverb);
-        synth.volume.value = -16;
-
-        synthRef.current = synth;
-        reverbRef.current = reverb;
-
-        audioUnlockedRef.current = true;
-        setAudioUnlocked(true);
-      } catch (e) {
-        console.error("Audio unlock failed", e);
-      }
-    }
-
-    window.addEventListener("click", unlock, { once: true });
-    window.addEventListener("touchstart", unlock, { once: true });
-
-    return () => {
-      window.removeEventListener("click", unlock);
-      window.removeEventListener("touchstart", unlock);
-    };
-  }, []);
-
-  function startMelodyIfUnlocked() {
-    if (!audioUnlockedRef.current) return;
-    if (isPlayingRef.current) return;
-    if (!synthRef.current) return;
-
-    if (fadeOutTimerRef.current) {
-      clearTimeout(fadeOutTimerRef.current);
-      fadeOutTimerRef.current = null;
-    }
-
-    synthRef.current.volume.cancelScheduledValues(Tone.now());
-    synthRef.current.volume.value = -16;
-
-    isPlayingRef.current = true;
-
-    let noteIndex = 0;
-    const loop = new Tone.Loop((time) => {
-      if (!synthRef.current) return;
-      const [note, duration] = CLAIR_DE_LUNE[noteIndex % CLAIR_DE_LUNE.length];
-      synthRef.current.triggerAttackRelease(note, duration, time);
-      noteIndex++;
-    }, "0:1:0");
-
-    Tone.Transport.bpm.value = 56;
-    loop.start(0);
-    Tone.Transport.start();
-    loopRef.current = loop;
-  }
-
-  function fadeOutMelody() {
-    if (!isPlayingRef.current) return;
-    if (!synthRef.current) return;
-
-    synthRef.current.volume.rampTo(-60, 1);
-
-    fadeOutTimerRef.current = window.setTimeout(() => {
-      if (loopRef.current) {
-        loopRef.current.stop();
-        loopRef.current.dispose();
-        loopRef.current = null;
-      }
-      Tone.Transport.stop();
-      isPlayingRef.current = false;
-      fadeOutTimerRef.current = null;
-    }, 1100);
-  }
-
-  useEffect(() => {
-    return () => {
-      if (fadeOutTimerRef.current) clearTimeout(fadeOutTimerRef.current);
-      loopRef.current?.stop();
-      loopRef.current?.dispose();
-      Tone.Transport.stop();
-      synthRef.current?.dispose();
-      reverbRef.current?.dispose();
-    };
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <div
       ref={containerRef}
       className="relative w-full h-[150px] md:h-[260px]"
-      aria-label="HAICHEN"
     >
-      <canvas ref={canvasRef} className="block w-full h-full" />
-
-      <span
-        className={`absolute bottom-2 right-2 font-mono text-[9px] tracking-[0.2em] uppercase transition-opacity duration-500 ${
-          audioUnlocked
-            ? "text-[var(--accent)]/60 opacity-100"
-            : "text-[var(--mute)]/40 opacity-60"
-        }`}
-        aria-live="polite"
-      >
-        {audioUnlocked ? "♪ ready · hover me" : "♪ click anywhere to unlock"}
-      </span>
+      {/* Semantic h1 for the page. Server-rendered, screen-reader-visible,
+          sighted-user-hidden. The visible wordmark is the particle canvas
+          immediately below; the h1 is the accessible representation that
+          exists in DOM regardless of JS state. View-source must contain
+          this element. Per PRODUCT.md §Accessibility + DESIGN.md Do's. */}
+      <h1 className="sr-only">HAICHEN</h1>
+      <canvas
+        ref={canvasRef}
+        className="block w-full h-full"
+        aria-hidden="true"
+      />
     </div>
   );
 }

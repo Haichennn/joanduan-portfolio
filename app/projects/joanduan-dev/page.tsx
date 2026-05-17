@@ -89,7 +89,7 @@ export default function JoanduanDevPage() {
           <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed mb-6 max-w-2xl">
             Brand work and engineering work are the same work. The decision to use Fraunces over Georgia, the decision to use SVG over PNG, the decision to call a section “What I&apos;m working on” instead of “Selected Work” — none of these are decoration. They&apos;re the same thinking: making something legible to the person on the other side.
           </p>
-          <blockquote className="border-l-2 border-[var(--accent)] pl-6 italic text-[var(--ink)]/70 my-8 font-sans">
+          <blockquote className="border border-[var(--accent)] p-6 italic text-[var(--ink)]/70 my-8 font-display text-lg leading-relaxed">
             Sustainability and accuracy are most important. I&apos;m not here to participate in competition. I&apos;m here to do real work.
           </blockquote>
           <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed mb-6 max-w-2xl">

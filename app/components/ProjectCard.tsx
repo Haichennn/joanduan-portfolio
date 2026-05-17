@@ -86,7 +86,7 @@ export default function ProjectCard({
         <StatusChip status={status} />
       </div>
 
-      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] mb-4">
+      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent-small)] mb-4">
         {category}
       </p>
 

@@ -2,6 +2,109 @@
 
 import { useState, useEffect } from "react";
 import { Copy, Check, Calendar } from "lucide-react";
+import { useAudio, type AudioState } from "./AmbientAudio";
+
+/**
+ * SideNav-owned audio affordance. Click-to-play architecture (post-Safari-
+ * autoplay-debug): hover preloads the synth graph but does NOT start
+ * AudioContext; the first AudioContext.resume() runs on click. This is
+ * required because Safari (and recent Chrome) reject Tone.start() from
+ * non-click user gestures.
+ *
+ * - onMouseEnter → preload() (builds synth, state idle → loading → ready)
+ * - onClick (state idle or ready) → play() (state → playing)
+ * - onClick (state playing) → stop() (state → ready after 1s fade)
+ *
+ * Audio state lives in <AudioProvider>; this component is a pure consumer.
+ *
+ * The button is rendered as a direct flex item of the SideNav column, with
+ * a short content-fitting label so it does not force the nav's intrinsic
+ * width wider than the section-link buttons (which would stretch all items
+ * via align-items: stretch and push the whole sidebar left over Hero).
+ * Visible labels are deliberately terse; aria-labels remain descriptive.
+ */
+function AudioToggle({
+  mobile = false,
+  className = "",
+}: {
+  mobile?: boolean;
+  className?: string;
+}) {
+  const { state, preload, play, stop } = useAudio();
+
+  const label = labelFor(state);
+  const ariaLabel = ariaLabelFor(state);
+  const isError = state === "error";
+  const isLoading = state === "loading";
+  const isPlaying = state === "playing";
+
+  function handleClick() {
+    if (isError || isLoading) return;
+    if (isPlaying) stop();
+    else void play();
+  }
+  function handleHover() {
+    // Hover only preloads. Calling play() here would attempt to start
+    // AudioContext from a non-click gesture, which Safari rejects and
+    // leaves stuck on 'loading' forever.
+    if (state === "idle") void preload();
+  }
+
+  // Sizing mirrors the surrounding nav links in each viewport.
+  const sizeClasses = mobile
+    ? "text-[11px] tracking-[0.3em]"
+    : "text-[10px] tracking-[0.3em]";
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      onMouseEnter={handleHover}
+      disabled={isError}
+      aria-label={ariaLabel}
+      aria-live="polite"
+      className={`font-mono uppercase text-left text-[var(--accent-small)] whitespace-nowrap ${sizeClasses} ${
+        isError
+          ? "opacity-40 cursor-not-allowed"
+          : "cursor-pointer hover:opacity-80"
+      } transition-opacity duration-200 ${className}`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function labelFor(s: AudioState): string {
+  switch (s) {
+    case "loading":
+      return "♪ LOADING";
+    case "ready":
+      return "♪ CLICK TO PLAY";
+    case "playing":
+      return "♪ MUTE";
+    case "error":
+      return "♪ UNAVAILABLE";
+    case "idle":
+    default:
+      return "♪ AMBIENT";
+  }
+}
+
+function ariaLabelFor(s: AudioState): string {
+  switch (s) {
+    case "loading":
+      return "Ambient audio loading";
+    case "ready":
+      return "Ambient audio ready. Click to play.";
+    case "playing":
+      return "Ambient audio playing. Click to mute.";
+    case "error":
+      return "Ambient audio unavailable";
+    case "idle":
+    default:
+      return "Ambient audio. Hover to preload, click to play.";
+  }
+}
 
 function MailIcon({ size = 12 }: { size?: number }) {
   return (
@@ -203,11 +306,19 @@ export default function SideNav() {
               onClick={() => handleClick(id)}
               className="group flex items-center gap-3 cursor-pointer"
             >
+              {/* GPU-accelerated hairline: fixed 24px width, animates via
+                  scaleX (transform) instead of width to avoid layout recalc
+                  per frame. Inactive: scaleX(0.5) → 12px visual. Active or
+                  group-hover: scaleX(1) → 24px visual. origin-left anchors
+                  the growth to the start of the rule. Default `transition`
+                  utility includes transform and background-color but NOT
+                  layout properties, satisfying DESIGN.md §Motion. */}
               <span
                 className={
-                  isActive
-                    ? "h-px transition-all duration-200 w-6 bg-[var(--accent)]"
-                    : "h-px transition-all duration-200 w-3 bg-[var(--mute)]/40 group-hover:w-6 group-hover:bg-[var(--ink)]"
+                  "h-px w-6 origin-left transition duration-200 " +
+                  (isActive
+                    ? "scale-x-100 bg-[var(--accent)]"
+                    : "scale-x-50 bg-[var(--mute)]/40 group-hover:scale-x-100 group-hover:bg-[var(--ink)]")
                 }
               />
               <span
@@ -223,10 +334,18 @@ export default function SideNav() {
           );
         })}
 
+        {/* Ambient audio affordance — placed between nav and CONTACT per the
+            locked IA in PRODUCT.md §IA. Direct flex item (no wrapper div)
+            so it sits in the same column rhythm as the section links above
+            and the CONTACT row below. mt-12 / md:mt-16 carries the visual
+            separation between the section nav and the audio + contact
+            cluster. Owns no state of its own; reads/writes AudioProvider. */}
+        <AudioToggle className="mt-12 md:mt-16" />
+
         {/* CONTACT block — visually separated from nav above */}
-        <div className="flex items-center gap-3 mt-12 md:mt-16">
+        <div className="flex items-center gap-3 mt-6">
           <span className="h-px w-3 bg-[var(--accent)]/60" />
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--accent-small)]">
             CONTACT
           </span>
           <span className="h-px w-3 bg-[var(--accent)]/60" />
@@ -255,7 +374,7 @@ export default function SideNav() {
       {/* Mobile hamburger trigger — top-right corner */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-5 right-5 z-[60] md:hidden w-10 h-10 flex items-center justify-center bg-[var(--base)]/85 backdrop-blur-md border border-[var(--ink)]/10 font-mono text-[var(--accent)] text-base cursor-pointer transition-all"
+        className="fixed top-5 right-5 z-[60] md:hidden w-11 h-11 flex items-center justify-center bg-[var(--base)]/85 backdrop-blur-md border border-[var(--ink)]/10 font-mono text-[var(--accent-small)] text-base cursor-pointer transition-all"
         aria-label={isOpen ? "Close menu" : "Open menu"}
         aria-expanded={isOpen}
       >
@@ -290,7 +409,7 @@ export default function SideNav() {
                   <span
                     className={
                       isActive
-                        ? "font-mono text-base uppercase tracking-[0.3em] transition-colors duration-200 text-[var(--accent)]"
+                        ? "font-mono text-base uppercase tracking-[0.3em] transition-colors duration-200 text-[var(--accent-small)]"
                         : "font-mono text-base uppercase tracking-[0.3em] transition-colors duration-200 text-[var(--mute)]"
                     }
                   >
@@ -300,10 +419,15 @@ export default function SideNav() {
               );
             })}
 
+            {/* Mobile ambient audio affordance — sits above CONTACT
+                in the overlay; mirrors the desktop placement. Direct flex
+                item, no wrapper. */}
+            <AudioToggle mobile className="mt-8" />
+
             {/* Mobile CONTACT block — visually separated from nav above */}
-            <div className="flex items-center gap-3 mt-8">
+            <div className="flex items-center gap-3 mt-6">
               <span className="h-px w-4 bg-[var(--accent)]/60" />
-              <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[var(--accent)]">
+              <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[var(--accent-small)]">
                 CONTACT
               </span>
               <span className="h-px w-4 bg-[var(--accent)]/60" />

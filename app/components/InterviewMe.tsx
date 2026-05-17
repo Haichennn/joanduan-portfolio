@@ -114,7 +114,7 @@ export default function InterviewMe() {
       <div className="max-w-6xl mx-auto">
         <header className="mb-12 md:mb-16">
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--mute)] mb-6 md:mb-8">
-            — INTERVIEW ME —
+            <span aria-hidden="true">– </span>INTERVIEW ME<span aria-hidden="true"> –</span>
           </p>
           <h2 className="font-display text-4xl md:text-5xl text-[var(--ink)] leading-[1.1] tracking-tight max-w-3xl">
             Curious about something
@@ -171,7 +171,7 @@ export default function InterviewMe() {
                 return (
                   <div key={i} className="flex justify-start">
                     <div className="max-w-[90%]">
-                      <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] mb-2">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent-small)] mb-2">
                         — HAICHEN —
                       </p>
                       {showWaiting ? (
@@ -195,7 +195,10 @@ export default function InterviewMe() {
           )}
 
           {error && (
-            <div className="mb-4 flex items-start gap-2 border-l-2 border-[var(--accent)] pl-4 py-2">
+            <div
+              role="alert"
+              className="mb-4 flex items-start gap-2 py-2"
+            >
               <AlertCircle
                 className="text-[var(--accent)] flex-shrink-0 mt-0.5"
                 size={16}
@@ -205,7 +208,7 @@ export default function InterviewMe() {
                 Something went wrong. You can reach me directly at{" "}
                 <a
                   href="mailto:haic.duan@gmail.com"
-                  className="text-[var(--accent)] underline underline-offset-4 hover:opacity-80"
+                  className="text-[var(--accent-small)] underline underline-offset-4 hover:opacity-80"
                 >
                   haic.duan@gmail.com
                 </a>
@@ -240,7 +243,7 @@ export default function InterviewMe() {
               type="submit"
               disabled={streaming || !input.trim()}
               aria-label="Send question"
-              className="flex-shrink-0 flex items-center justify-center w-10 h-10 bg-[var(--ink)] text-[var(--base)] hover:bg-[var(--accent)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[var(--ink)]"
+              className="flex-shrink-0 flex items-center justify-center w-11 h-11 bg-[var(--ink)] text-[var(--base)] hover:bg-[var(--accent)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[var(--ink)]"
             >
               <Send size={16} aria-hidden="true" />
             </button>
@@ -250,7 +253,7 @@ export default function InterviewMe() {
             Liked what I said? Reach out at{" "}
             <a
               href="mailto:haic.duan@gmail.com"
-              className="text-[var(--accent)] hover:opacity-80 normal-case tracking-normal"
+              className="text-[var(--accent-small)] hover:opacity-80 normal-case tracking-normal"
             >
               haic.duan@gmail.com
             </a>

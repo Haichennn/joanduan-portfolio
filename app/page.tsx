@@ -5,17 +5,20 @@ import Projects from "./components/Projects";
 import DataLab from "./components/DataLab";
 import InterviewMe from "./components/InterviewMe";
 import SideNav from "./components/SideNav";
+import { AudioProvider } from "./components/AmbientAudio";
 
 export default function Home() {
   return (
-    <main className="bg-[var(--base)] relative">
-      <SideNav />
-      <Hero />
-      <About />
-      <Experience />
-      <Projects />
-      <DataLab />
-      <InterviewMe />
-    </main>
+    <AudioProvider>
+      <main className="bg-[var(--base)] relative">
+        <SideNav />
+        <Hero />
+        <About />
+        <Experience />
+        <Projects />
+        <DataLab />
+        <InterviewMe />
+      </main>
+    </AudioProvider>
   );
 }

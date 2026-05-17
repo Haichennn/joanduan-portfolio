@@ -415,7 +415,7 @@ export default function Projects() {
       <div className="max-w-6xl mx-auto">
         <header className="mb-24 md:mb-32">
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--mute)] mb-6 md:mb-8">
-            — PROJECTS —
+            <span aria-hidden="true">– </span>PROJECTS<span aria-hidden="true"> –</span>
           </p>
           <h2 className="font-display text-5xl md:text-6xl text-[var(--ink)] leading-[1.05] tracking-tight mb-6">
             What I&apos;m working on.

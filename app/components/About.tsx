@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 
 const chapters = [
   {
@@ -63,7 +64,7 @@ function Chapter({
 }) {
   return (
     <div>
-      <h3 className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--accent)] mb-8">
+      <h3 className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--accent-small)] mb-8">
         {title}
       </h3>
       <div className="space-y-6">
@@ -84,8 +85,20 @@ function IDBadge() {
   const [isFlipped, setIsFlipped] = useState(false)
   const [hasEntered, setHasEntered] = useState(false)
   const [tilt, setTilt] = useState({ x: 0, y: 0 })
+  // Tracks prefers-reduced-motion. When set, parallax tilt on cursor
+  // movement is disabled (the badge stays flat). The double-tap flip is
+  // preserved because it is user-initiated. Per PRODUCT.md §A11y.
+  const [reducedMotion, setReducedMotion] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
+    setReducedMotion(motionQuery.matches)
+    const onChange = (e: MediaQueryListEvent) => setReducedMotion(e.matches)
+    motionQuery.addEventListener("change", onChange)
+    return () => motionQuery.removeEventListener("change", onChange)
+  }, [])
 
   useEffect(() => {
     const node = containerRef.current
@@ -106,6 +119,7 @@ function IDBadge() {
   }, [])
 
   function handleMouseMove(e: React.MouseEvent) {
+    if (reducedMotion) return
     if (!cardRef.current) return
     const rect = cardRef.current.getBoundingClientRect()
     const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10
@@ -149,7 +163,7 @@ function IDBadge() {
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           onDoubleClick={handleDoubleClick}
-          className="relative cursor-pointer select-none"
+          className="relative cursor-grab select-none"
           style={{
             width: '260px',
             height: '420px',
@@ -160,10 +174,9 @@ function IDBadge() {
         >
           {/* FRONT */}
           <div
-            className="absolute inset-0 flex flex-col"
+            className="absolute inset-0 flex flex-col bg-[var(--badge-paper)]"
             style={{
               backfaceVisibility: 'hidden',
-              background: '#FCFAF5',
               boxShadow: `
                 0 1px 0 rgba(0,0,0,0.04) inset,
                 0 -1px 0 rgba(0,0,0,0.06) inset,
@@ -193,15 +206,17 @@ function IDBadge() {
 
             {/* Photo — dominant, ~55% of card height */}
             <div className="flex-1 w-full flex items-center justify-center px-4 pt-0 pb-2">
-              <img
+              <Image
                 src="/me.jpg"
                 alt="Haichen Duan"
-                className="w-full h-full object-cover"
+                width={210}
+                height={230}
+                sizes="260px"
+                loading="lazy"
+                className="object-cover object-[center_top]"
                 style={{
                   maxWidth: '210px',
                   maxHeight: '230px',
-                  objectFit: 'cover',
-                  objectPosition: 'center top',
                 }}
               />
             </div>
@@ -211,7 +226,7 @@ function IDBadge() {
               <div className="font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] leading-tight">
                 Haichen Duan
               </div>
-              <div className="mt-2 font-mono text-[10px] tracking-[0.15em] uppercase text-[var(--accent)]">
+              <div className="mt-2 font-mono text-[10px] tracking-[0.15em] uppercase text-[var(--accent-small)]">
                 Designer · Engineer · Analyst
               </div>
               <div className="my-3 mx-auto w-8 h-px bg-[var(--accent)]" />
@@ -226,10 +241,9 @@ function IDBadge() {
 
           {/* BACK */}
           <div
-            className="absolute inset-0 flex flex-col"
+            className="absolute inset-0 flex flex-col bg-[var(--badge-paper)]"
             style={{
               backfaceVisibility: 'hidden',
-              background: '#FCFAF5',
               transform: 'rotateY(180deg)',
               boxShadow: `
                 0 1px 0 rgba(0,0,0,0.04) inset,
@@ -260,7 +274,7 @@ function IDBadge() {
 
             {/* Contact heading */}
             <div className="px-5 pt-6 pb-2">
-              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] mb-1">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent-small)] mb-1">
                 Contact
               </p>
               <p className="font-display text-xl text-[var(--ink)] tracking-tight mb-4">
@@ -310,7 +324,7 @@ function IDBadge() {
 
             {/* Location */}
             <div className="px-5 pt-6 pb-2">
-              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] mb-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent-small)] mb-2">
                 Location
               </p>
               <p className="font-sans text-sm text-[var(--ink)]">
@@ -321,7 +335,7 @@ function IDBadge() {
             {/* Footer */}
             <div className="w-full px-5 pb-5 mt-auto flex flex-col items-center">
               <div className="w-8 h-px bg-[var(--accent)] mb-3" />
-              <p className="font-[family-name:var(--font-display)] italic text-sm text-[var(--accent)] text-center">
+              <p className="font-[family-name:var(--font-display)] italic text-sm text-[var(--accent-small)] text-center">
                 Probare et Aedificare.
               </p>
             </div>
@@ -340,7 +354,7 @@ export default function About() {
           <div className="md:col-span-2 space-y-20 md:space-y-24 order-2 md:order-1">
             <header className="mb-24 md:mb-32">
               <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--mute)] mb-6 md:mb-8">
-                — ABOUT —
+                <span aria-hidden="true">– </span>ABOUT<span aria-hidden="true"> –</span>
               </p>
               <h2 className="font-display text-5xl md:text-6xl text-[var(--ink)] leading-[1.05] tracking-tight">
                 Probare<br />et Aedificare.
