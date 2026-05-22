@@ -84,9 +84,9 @@ Closing line: `MORE TO COME, CURRENTLY LOOKING FOR INTERNSHIP ROLES`.
 
 Section heading: en-dash flanked `– PROJECTS –`.
 Title: `What I'm working on.`
-Subtitle: `Seven projects. Two live, one in progress, four on the roadmap.`
+Subtitle: `Eight projects. Three live, one in progress, four on the roadmap.`
 
-Seven entries. Each entry pairs a **custom data visualization preview** with the project description. Per entry layout:
+Eight entries. Each entry pairs a **custom data visualization preview** with the project description. Per entry layout:
 
 - Custom viz container with status badge in a corner pill: `LIVE` / `IN PROGRESS` / `BUILDING` / `PLANNED` / `ROADMAP`
 - Category tag in Burnt Sienna: e.g. `ENGINEERING / FRONTEND`, `DATA / ANALYTICS`, `AI / AUTOMATION`, `DATA / FORECASTING`, `AI / RESEARCH`, `AI / NLP`

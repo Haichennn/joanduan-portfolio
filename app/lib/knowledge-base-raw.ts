@@ -149,7 +149,7 @@ I shipped Next.js 16 + Tailwind v4 + TypeScript on Vercel in 7 days, solo:
 **Decision**: The Hero IS the project. Anyone who lands on the site sees me execute the "AI-native builder" claim in the first 10 seconds. Words on the page just confirm what their eyes already showed them.
 
 **Challenge 2**: How honest to be about projects I haven't shipped yet?
-**Decision**: 4 of 7 projects on the Projects page are explicitly marked PLANNED with timeline. I'd rather show a credible roadmap than fake completeness. People who hire builders know what "in progress" looks like.
+**Decision**: 4 of 8 projects on the Projects page are explicitly marked PLANNED with timeline. I'd rather show a credible roadmap than fake completeness. People who hire builders know what "in progress" looks like.
 
 **Challenge 3**: AI Vision Evolution — how do you visualize an abstract concept (computer vision evolution) without it becoming a slide deck?
 **Decision**: Three particle states, three named labels (PERCEPTION / COMPREHENSION / COMPOSITION), one continuous animation. No text labels except section titles. The concept is felt, not read.
@@ -458,84 +458,105 @@ A reproducible quantitative pipeline that turns three otherwise-incompatible dat
   {
     id: 'project-repolens',
     type: 'project',
-    text: `Repolens — Agentic GitHub Repo Audit System (May–June 2026)
+    text: `Repolens — Agentic AI Repository Auditor (May 2026)
 
 ## SITUATION
 
-Engineers regularly need to evaluate unfamiliar GitHub repositories — for dependency selection, due diligence before adopting a library, onboarding into a legacy codebase, or open-source contribution decisions. The current workflow is manual: skim the README, click through file structure, check commit graphs, eyeball the issues tab. It takes thirty minutes and produces an inconsistent gut feeling. I wanted a tool that produces a structured, defensible audit in two minutes — and that uses agentic AI in a way I could explain end-to-end.
+Two motivations converged. First, as a builder I needed a way to evaluate the quality of GitHub repos I was learning from — what does industry-standard documentation, architecture, and testing actually look like? Second, as a Claude user I noticed Claude can't autonomously clone and audit a whole repo: I can describe what I implemented and get feedback, but the comprehensive structured overview has to come from a separate system. The existing manual workflow — skim README, click through files, eyeball commit graph, scan issues tab — takes thirty minutes and produces an inconsistent gut feeling. Repolens fills that gap.
 
 ## TASK
 
-Build an agentic AI system that audits any GitHub repository across five dimensions (architecture, security, documentation, maintenance, testing), returns structured Pydantic outputs, and renders the results in an interactive dashboard. The system should be a learning vehicle for production-grade LangChain + LangGraph + MCP orchestration — concepts I want fluent before applying to AI/Agentic engineering roles. Ship a working V1 in fourteen days (May 22 – June 5, 2026) as a public portfolio project.
+Build an agentic AI repository auditor that turns any GitHub URL into a structured 5-dimensional health assessment in under two minutes — and ship the whole thing solo in fourteen days as a public portfolio project I can defend in an interview end-to-end.
 
 ## ACTION
 
-Built repolens at github.com/Haichennn/repolens. Stack: Python backend (FastAPI + LangChain + LangGraph + Pydantic), MCP server for external data lookups, Next.js + Tailwind frontend dashboard, deployed on Vercel + Railway.
+Built Repolens, live at repolens-audit.vercel.app, code at github.com/Haichennn/repolens.
 
-**Agent architecture** (LangGraph orchestration): one state-passing graph where five audit nodes run against shared repository state. Each node is a structured-output LangChain agent — the same node pattern, swapping prompts and evaluation criteria per dimension. State is a TypedDict (\`RepoState\`) that accumulates audit results so the frontend can render all five together.
+**Architecture — 5 parallel LLM agents orchestrated by LangGraph.** Each agent audits one dimension (documentation, architecture, maintenance, testing, security) and uses LangChain's \`with_structured_output\` for typed Pydantic responses. Results aggregate into a weighted overall score and severity verdict (adopt / adopt with caution / pass).
 
-**Five audit dimensions, each a sub-agent with its own Pydantic schema**:
-- Documentation: README completeness, structure, audience-fit, doc hints (CONTRIBUTING, /docs)
-- Architecture: file organization, framework choices, configuration hygiene, language detection
-- Maintenance: commit recency, contributor count, bus-factor risk, release cadence, with stars/forks as context calibration (not scoring input)
-- Testing: test-folder presence, test-to-source ratio, framework detection (pytest/jest/vitest), CI/CD config, coverage badge
-- Security: dependency vulnerabilities via MCP server lookups against a mocked CVE database
+**Custom MCP server for security tools.** Built with Anthropic's Model Context Protocol SDK. The Security agent queries it over JSON-RPC stdio for CVE database lookups and package registry checks. I chose MCP instead of direct API calls deliberately — it demonstrates familiarity with recent (late 2024) Anthropic tooling and forces clean separation of agent reasoning from external tool I/O.
 
-**Custom MCP server** (in active development, Day 5 of sprint): exposes two mock data sources to the agent — a CVE database for vulnerability lookups by package name and version, and a package registry for metadata (license, latest version, maintenance status). The Security audit node calls these via Anthropic's Model Context Protocol — a 2024 protocol that standardizes how LLMs connect to external tools.
+**Three distribution channels**: web UI on Vercel, REST API on Railway, and a Claude Skill (\`skills/repolens/SKILL.md\`). The Skill is the move I'm most proud of — users can audit repos from inside Cursor or Claude Code without visiting the website. Repolens stops competing with their IDE and starts plugging into it.
 
-**Structured output discipline**: every audit node returns a Pydantic object — \`DocumentationAudit\`, \`ArchitectureAudit\`, etc. — with fields like \`score\` (0–100), \`severity\` (good/warning/critical enum), \`findings\` (evidence-cited bullet list), \`recommendations\` (prioritized, actionable). LangChain's \`with_structured_output\` guarantees schema compliance, so the frontend can render fields without parsing free-form text.
+**Four key engineering decisions during the sprint**:
 
-**Engineering hygiene through the sprint**:
-- Day-by-day incremental commits to GitHub (not one batch dump) so the build journey is visible to anyone reading the commit history
-- ROADMAP.md publicly tracks V1 scope, V2 backlog (decision-memo generator, dependency due-diligence, comparative ranking), and V3 vision
-- IDEAS.md captures brainstorm items during the sprint with an explicit process rule: "no idea evaluation during V1 sprint" — to prevent scope creep
-- Dogfooding: I run the agent against my own Repolens repo each day. The agent flagged my missing tests, missing CI config, and a real bug in my own test-file detection logic — and the bug fix moved the FastAPI testing score from 55 → 85 (5-line refactor: substring matching to path-segment matching)
+1. **MCP server for security audit (Day 5)** — instead of letting the Security agent call PyPI/npm/CVE APIs directly, I built a dedicated MCP subprocess that exposes those as tools. It is more complexity than the V1 needed, but it forces the agent/tool boundary that production agentic systems require.
 
-**Deliberate non-ownership**: the agent reasoning is Claude (claude-sonnet-4-5). I designed the prompts, schemas, orchestration, and evaluation criteria — but the synthesis itself is the model. I built the MCP server scaffolding but the protocol specification is Anthropic's. I am not claiming I invented agent orchestration — I am demonstrating I can ship production-shaped agentic systems with current 2026 tooling.
+2. **Server-Sent Events refactor (Day 10)** — V1 used a blocking \`LangGraph .invoke()\` call with a spinner. After shipping I dogfooded it and immediately felt the UX problem: a 90-second wait with no signal that anything is happening. I refactored to \`.astream()\`, built an \`/audit/stream\` SSE endpoint, and wired an EventSource on the frontend with auto-retry disabled (auto-retry creates duplicate runs on a long-running stream — a footgun). Now each dimension reports as it completes; users see the audit happen, not wait for it.
+
+3. **Skill as distribution channel (Day 14)** — I had been building a "built-in terminal" feature so users could audit from a CLI on the site. Halfway through I realized users already have Cursor, Claude Code, and Codex; I was reinventing what they had. I dropped the terminal mid-build and shipped the Claude Skill instead. The reframe — Repolens is infrastructure that plugs INTO an AI-aware IDE — is more defensible than another website-with-a-terminal.
+
+4. **Docker containerization** shaped two decisions: the MCP server runs as a subprocess inside the backend image (isolated but co-located, with the \`command=sys.executable\` portability fix needed because Docker's python3 symlink differs from macOS), and the multi-stage build keeps the production image lean. The same Dockerfile is the basis for V3's self-hosted Docker Compose stack for enterprise customers.
+
+**V2 features that shipped in the same sprint**:
+- **Decision Memo Generator** — synthesizes the 5 dimension audits into a 3-tier verdict (adopt / adopt with caution / pass) with cited evidence
+- **Dependency Due Diligence** — per-dependency risk, license, and alternatives for Python (PyPI) and JavaScript (npm)
+- **Comparative Ranking** — audit and rank 2–4 repos side-by-side, so "which auth library should we use" becomes a structured comparison instead of three browser tabs
+
+**The dogfooding moment.** I ran Repolens against its own repository on Day 11. It scored itself 67/100 — flagged missing CI pipeline, unpinned dependencies, no LICENSE, no CONTRIBUTING.md, and a weak Quick Start. I fixed every flagged item in two sittings. The re-audit pushed the score to 80+. The product validated itself; the GitHub history shows the before/after with timestamps.
+
+**Stack**: FastAPI, LangGraph, MCP, Anthropic SDK, Pydantic, Docker, Railway (backend); Next.js 16, TypeScript strict, Tailwind v4, shadcn/ui Nova preset, EventSource (frontend); GitHub Actions CI.
+
+**Deliberate non-ownership**: the agent reasoning is Claude — I designed prompts, schemas, orchestration, and evaluation criteria, but the synthesis itself is the model. The MCP protocol specification is Anthropic's; I built the server scaffolding around it. Audit scores are evidence-cited LLM assessments, not formal verification — I say this explicitly in the UI so reviewers know what they're reading.
 
 ## RESULT
 
-(In active development; V1 ship target June 5, 2026.) Live at github.com/Haichennn/repolens with day-by-day commit history. Four of five audit nodes pass end-to-end testing against multiple real repos (own repo, FastAPI, LangGraph). Architecture audit gives FastAPI 92/100, my own scaffolded repo 42/100, calibrated against codebase state. Testing audit correctly identifies that FastAPI has 625 test files for 521 source files (120% test-to-source ratio) — after fixing the path-segment detection bug. The Pydantic schemas, the LangGraph state-passing pattern, and the structured-output discipline transfer directly to enterprise agentic projects.
+Production live at repolens-audit.vercel.app with three distribution channels (web, REST API, Claude Skill). 14-day solo build, May 2026. Real Server-Sent Events streaming means the audit happens visibly instead of behind a spinner. The dogfooding loop — Repolens auditing itself, me fixing the findings, the score rising from 67 to 80+ — became the artifact I use to explain the project: a tool that improved its own repo by being honest about it.
 
 ## WHAT I LEARNED
 
-- Structured output is the unlock for agentic systems that downstream UIs can render. Free-form text from an LLM is a demo; \`with_structured_output(PydanticClass)\` is a product.
-- Popularity metrics (stars, forks) should be context calibration, not scoring input — high stars on an abandoned repo should not inflate a maintenance score. The same data can serve different roles in different features; the discipline is naming which role explicitly.
-- Capturing brainstorm ideas in a file (IDEAS.md) is a cheap way to honor your future self without derailing your current sprint. Every "what if we also…" gets archived, not evaluated.
-- A bug found by dogfooding is more credible than a bug found by tests. When my own tool told me my test count was 38 (it should have been 625), I fixed five lines of code and the FastAPI testing score moved from warning to good. That story is worth more in an interview than any benchmark.
+- Structured output is the unlock for agentic systems that downstream UIs can render. Free-form text from an LLM is a demo; \`with_structured_output(PydanticClass)\` is a product. The frontend can render fields without parsing prose.
+- True progressive disclosure (SSE) is not a polish item — it is the difference between a demo that feels alive and a demo that feels broken. Refactor \`.invoke()\` to \`.astream()\` the moment any single call exceeds ~10 seconds.
+- The right distribution channel depends on where the user already is. Building a terminal on a website when users already have Cursor / Claude Code is competing with their tools; shipping a Claude Skill is plugging into them. I'd rather be infrastructure than a destination.
+- A bug found by dogfooding beats a bug found by tests, narratively. The "Repolens audited itself at 67, I fixed it, re-audit hit 80+" story does more in an interview than any benchmark number.
+- Killing a half-built feature (the terminal) is cheaper than shipping it half-finished. Abandoning it on Day 14 was the highest-leverage decision of the sprint.
 
 ## WHAT I CAN CONTRIBUTE
 
-- I can scaffold an agentic system end-to-end: schema design (Pydantic), orchestration (LangGraph), structured output (LangChain), external tool integration (MCP), dashboard rendering (Next.js).
-- I treat agents as products, not demos: I think about who reads the output (engineers, recruiters, decision-makers), what schema makes it renderable, what gets stored vs streamed, what fails gracefully.
-- I ship in public with day-by-day commits and an explicit ROADMAP, so my work is auditable from the codebase — the same discipline I would bring to a team repository.`,
+- I can scaffold an agentic system end-to-end: schema design (Pydantic), orchestration (LangGraph), structured output (LangChain), external tool integration (MCP), streaming UI (SSE + EventSource), dashboard rendering (Next.js + shadcn/ui).
+- I treat agents as products, not demos: who reads the output, what schema makes it renderable, what streams vs what blocks, what fails gracefully, and where the distribution channel actually lives.
+- I ship in public with day-by-day commits and an explicit ROADMAP, so my engineering judgment is auditable from the codebase — the same discipline I would bring to a team repository.
+- I am fluent enough with current (2026) Anthropic tooling — MCP servers, Claude Skills, structured outputs, streaming agent loops — to build production-shaped agentic systems on the latest primitives, not last year's patterns.
+
+## V3 ROADMAP
+
+Local repo audit (pre-push quality check without GitHub push), audit history with score trajectory over time, multi-ecosystem dependency support (Go, Rust, Java).`,
     metadata: {
       topic_tags: [
+        'Repolens',
         'agentic AI',
-        'LangChain',
         'LangGraph',
         'MCP',
         'Model Context Protocol',
+        'Claude Skill',
         'structured output',
         'Pydantic',
+        'Server-Sent Events',
         'GitHub repo audit',
         'production AI engineering',
+        'FastAPI',
+        'Next.js',
+        'shadcn-ui',
+        '14-day-sprint',
       ],
       skills_demonstrated: [
-        'LangGraph state-passing graph orchestration',
+        'LangGraph parallel agent orchestration',
         'LangChain with_structured_output for schema-guaranteed LLM responses',
         'Pydantic schema design for multi-dimensional audits',
         'MCP server implementation (Anthropic Model Context Protocol)',
-        'FastAPI backend + Next.js dashboard architecture',
+        'Claude Skill packaging and distribution',
+        'Server-Sent Events streaming with EventSource',
+        'FastAPI backend + Next.js 16 + shadcn/ui frontend architecture',
         'agent prompt engineering with evidence-cited findings',
-        'dogfooding-driven bug discovery',
-        'incremental shipping with public commit history',
+        'dogfooding-driven self-audit and remediation',
+        'mid-sprint feature kill decisions',
+        'production deployment (Vercel + Railway)',
       ],
       honesty_notes: [
-        'In active development — V1 ship target June 5, 2026; V2 features (comparative ranking, decision memo, dependency due-diligence) are in ROADMAP backlog, not yet built',
-        'Agent reasoning is Claude (claude-sonnet-4-5); I designed prompts, schemas, orchestration but not the model itself',
+        'Agent reasoning is Claude; I designed prompts, schemas, orchestration but not the model itself',
         'The MCP protocol specification is Anthropic\'s; I built the server scaffolding around it',
-        'Audit scores are calibrated to be evidence-cited, but they are still LLM-generated assessments — not formal verification',
+        'Audit scores are evidence-cited LLM assessments, not formal verification — stated explicitly in the UI',
+        'Repolens is in active development beyond the initial 14-day sprint — V3 roadmap items (local audit, score trajectory, Go/Rust/Java) are not yet built',
       ],
     },
   },

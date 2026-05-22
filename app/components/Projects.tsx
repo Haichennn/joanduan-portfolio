@@ -303,6 +303,99 @@ function VisualQuoteLines() {
   );
 }
 
+function VisualRepoAudit() {
+  const dims = [
+    { label: "DOCS", score: 82 },
+    { label: "ARCH", score: 91 },
+    { label: "MAINT", score: 74 },
+    { label: "TEST", score: 88, accent: true },
+    { label: "SEC", score: 67 },
+  ];
+  const barX = 220;
+  const barMax = 460;
+  const rowH = 44;
+  const top = 80;
+
+  return (
+    <svg viewBox="0 0 800 450" className="w-full h-full" fill="none">
+      <text x="60" y="50" className="font-mono" fontSize="11" fill="var(--ink)" fillOpacity="0.5" letterSpacing="2">
+        REPOLENS // 5-DIMENSIONAL AUDIT
+      </text>
+
+      <line x1="60" y1="70" x2="740" y2="70" stroke="var(--ink)" strokeOpacity="0.15" strokeWidth="1" />
+
+      {dims.map((d, i) => {
+        const y = top + i * rowH;
+        const w = (d.score / 100) * barMax;
+        return (
+          <g key={d.label}>
+            <text
+              x="60"
+              y={y + 22}
+              className="font-mono"
+              fontSize="12"
+              fill="var(--ink)"
+              fillOpacity="0.7"
+              letterSpacing="1"
+            >
+              {d.label}
+            </text>
+            <line
+              x1={barX}
+              y1={y + 18}
+              x2={barX + barMax}
+              y2={y + 18}
+              stroke="var(--ink)"
+              strokeOpacity="0.12"
+              strokeWidth="8"
+            />
+            <line
+              x1={barX}
+              y1={y + 18}
+              x2={barX + w}
+              y2={y + 18}
+              stroke={d.accent ? "var(--accent)" : "var(--ink)"}
+              strokeOpacity={d.accent ? undefined : 0.55}
+              strokeWidth="8"
+            />
+            <text
+              x={barX + barMax + 18}
+              y={y + 22}
+              className="font-mono"
+              fontSize="12"
+              fill="var(--ink)"
+              fillOpacity="0.6"
+            >
+              {d.score}
+            </text>
+          </g>
+        );
+      })}
+
+      <line x1="60" y1="320" x2="740" y2="320" stroke="var(--ink)" strokeOpacity="0.15" strokeWidth="1" />
+
+      <text x="60" y="350" className="font-mono" fontSize="11" fill="var(--ink)" fillOpacity="0.5" letterSpacing="2">
+        VERDICT
+      </text>
+      <rect x="220" y="335" width="180" height="22" stroke="var(--accent)" strokeWidth="1.5" fill="none" />
+      <text x="310" y="351" textAnchor="middle" className="font-mono" fontSize="11" fill="var(--accent)" letterSpacing="2">
+        ADOPT WITH CAUTION
+      </text>
+
+      <text x="60" y="395" className="font-mono" fontSize="11" fill="var(--ink)" fillOpacity="0.5" letterSpacing="2">
+        SCORE
+      </text>
+      <text x="220" y="395" className="font-mono" fontSize="14" fill="var(--ink)" fillOpacity="0.8">
+        80 / 100
+      </text>
+
+      <text x="780" y="430" textAnchor="end" className="font-mono" fontSize="10" fill="var(--ink)" fillOpacity="0.4" letterSpacing="1">
+        STREAMED VIA SSE
+      </text>
+    </svg>
+  );
+}
+
 const creatorEconomyDisclaimer = (
   <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-[var(--mute)]/60 italic mt-3 leading-relaxed">
     Independent project · public Bilibili / Douyin API data · inspired by but
@@ -325,6 +418,34 @@ const projects = [
     liveUrl: "/projects/joanduan-dev",
     codeUrl: "https://github.com/Haichennn/joanduan-portfolio",
     visual: <VisualSiteMap />,
+  },
+  {
+    id: "repolens",
+    slug: "repolens",
+    anchor: "project-repolens",
+    category: "AI / AGENTS",
+    title: "Repolens",
+    description:
+      "An agentic AI repository auditor. Paste any GitHub URL, get a structured 5-dimensional audit (documentation, architecture, maintenance, testing, security) in under a minute, plus decision memos, dependency due diligence, and side-by-side repo comparison.",
+    tags: [
+      "Python",
+      "FastAPI",
+      "LangGraph",
+      "MCP",
+      "Anthropic API",
+      "Docker",
+      "Next.js",
+      "TypeScript",
+      "Tailwind",
+      "Railway",
+      "Vercel",
+    ],
+    status: "live" as const,
+    year: "2026.05",
+    liveUrl: "https://repolens-audit.vercel.app",
+    codeUrl: "https://github.com/Haichennn/repolens",
+    secondaryUrl: "/projects/repolens",
+    visual: <VisualRepoAudit />,
   },
   {
     id: "wayback",
@@ -421,7 +542,7 @@ export default function Projects() {
             What I&apos;m working on.
           </h2>
           <p className="font-sans text-base text-[var(--mute)] leading-relaxed max-w-xl">
-            Seven projects. Two live, one in progress, four on the roadmap.
+            Eight projects. Three live, one in progress, four on the roadmap.
           </p>
         </header>
 
