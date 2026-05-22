@@ -1,7 +1,7 @@
 // =============================================================================
 // Interview Me — Knowledge Base
 // =============================================================================
-// 11 chunks total: 4 PROJECT + 4 SKILL + 3 REFLECTION
+// 13 chunks total: 6 PROJECT + 4 SKILL + 3 REFLECTION
 // All chunks use STAR structure (Situation / Task / Action / Result)
 // Plus "What I learned" and "What I can contribute" closer sections
 //
@@ -28,7 +28,7 @@ export interface KnowledgeChunk {
 export const knowledgeBase: KnowledgeChunk[] = [
 
   // ===========================================================================
-  // PROJECT CHUNKS (1-4)
+  // PROJECT CHUNKS (1-6)
   // ===========================================================================
 
   // ---------- 1. WayBack ---------------------------------------------------
@@ -373,8 +373,175 @@ This was a focused independent project on a single dataset, not an enterprise BI
     }
   },
 
+  // ---------- 5. AGI Labor Market Pipeline ---------------------------------
+  {
+    id: 'project-agi-pipeline',
+    type: 'project',
+    text: `AGI Labor Market Analysis — Cross-Country Exposure Pipeline (May–July 2026)
+
+## SITUATION
+
+TUM AI Governance seminar (Profs. Ullstein & Hohendanner, WS25/26), four-person group, individual P4 Synthesis section. The seminar paper needs to quantify how AI capabilities will reshape European labor markets, with three AGI capability scenarios (2x / 5x / 10x current exposure). No off-the-shelf dataset exists for this — Eloundou et al. 2024 (Science) measure US occupation-level exposure, Eurostat publishes EU employment by occupation, but the two use incompatible classification systems (O*NET-SOC vs ISCO-08). Strict seminar rules: GenAI may only polish author-written text, never generate code or analysis. Paper deliverable July 17, 2026.
+
+## TASK
+
+Build an end-to-end Python pipeline that integrates three independent sources into a single country-level exposure metric, then projects three AGI scenarios. Author-written code per seminar rules. Pipeline must be reproducible from raw data on any teammate's machine, and the analytical assumptions must be defensible in an oral exam.
+
+## ACTION
+
+Built a 6-step Python pipeline (pandas, numpy, matplotlib) at github.com/Haichennn/agi-labor-analysis. Each step is a documented function with explicit input/output contracts:
+
+**Step 1 — Eloundou loader** (load_eloundou): reads occ_level.csv with 923 US occupations and 6 exposure scores. Extracts the 7-character SOC code from the O*NET-SOC field for downstream joining.
+
+**Step 2 — BLS crosswalk loader** (load_crosswalk): reads the official BLS SOC-2010-to-ISCO-08 crosswalk Excel, handles the 6-row metadata header. Adds a 2-digit ISCO code by zero-padding and slicing, normalizing the mapping granularity.
+
+**Step 3 — Eurostat loader** (load_eurostat): reads the LFS employment-by-occupation panel across 38 European countries. Filters to year(s), both sexes (T), working-age 15-64, and the OC-prefixed ISCO 2-digit level. Accepts either a single int or a list of years for multi-year analysis.
+
+**Step 4 — Mapping pipeline** (map_exposure_to_isco): merges Eloundou (US SOC) with the BLS crosswalk on SOC_Code, groups by ISCO_2digit, averages the human_rating_beta exposure score. This is the analytical core — without the crosswalk, US occupation data is unusable for European employment statistics.
+
+**Step 5 — Country analysis** (country_analysis): joins Eurostat employment with ISCO exposure scores, computes total exposed workers per country as employment × exposure, then exposure_pct as total_exposed / total_employment. Output sorted descending.
+
+**Step 6 — AGI scenarios** (agi_scenarios): for each scenario (baseline 1.0x, AGI 2x, 5x, 10x), multiplies current exposure by the capability multiplier, capped at 1.0 (a task cannot be more than 100% exposed). Returns a long-format DataFrame with scenario as a column for visualization.
+
+**Three publication-grade matplotlib figures** (figures.py):
+- Figure 1: ISCO occupation exposure ranking — horizontal bar chart with RdYlGn_r colormap, all 43 ISCO 2-digit codes sorted by exposure, percentage x-axis. Reveals which occupational groups are most exposed.
+- Figure 2: Cross-country exposure for 2024 — vertical bars across 38 European countries with Germany highlighted in crimson and EU27 baseline as horizontal reference line. Shows national variation around the EU average.
+- Figure 3: AGI scenarios — grouped bar chart comparing baseline vs 2x/5x/10x for a curated set of major European economies (DE, FR, IT, ES, NL, EU27). Color gradient from blue (baseline) to red (AGI_10x). Shows convergence patterns: most countries cluster near 80-90% exposure under AGI_10x.
+
+**Deliberate non-ownership**: I did not write the seminar's literature review section or the policy-implications discussion — teammates own those. I do not claim the Eloundou exposure scores or the BLS crosswalk are my work; they are published artifacts I integrated. The AGI scenario multipliers (2x/5x/10x) are illustrative thought experiments, not empirical forecasts — the paper will state this explicitly.
+
+## RESULT
+
+A reproducible quantitative pipeline that turns three otherwise-incompatible datasets into a defensible country-level exposure metric across 38 European countries, extended into three AGI scenarios. Author-written per seminar rules, so the paper can claim every analytical decision is defensible in oral defense. Code lives at github.com/Haichennn/agi-labor-analysis (currently private per seminar confidentiality; public after July 17, 2026 paper submission).
+
+## WHAT I LEARNED
+
+- The hard part of cross-source analysis is not the model — it is the crosswalk. The BLS SOC-ISCO mapping is the single piece of infrastructure that makes the whole pipeline possible. I now look for the crosswalk first when I see two datasets that "should" join.
+- "Scenarios" are not predictions. The AGI 2x/5x/10x multipliers are framing devices that force the reader to make explicit assumptions. The number on the chart is less important than the conversation it provokes.
+- Capping exposure at 1.0 is a design decision, not a math convenience. It enforces the assumption that "fully exposed" is the ceiling — which is contestable but defensible.
+- Reproducibility discipline is a tax that pays back at the worst moment. When my teammate could not replicate Figure 2, the explicit function signatures and filter rules made the diff a 10-minute conversation, not a debugging session.
+
+## WHAT I CAN CONTRIBUTE
+
+- I can take a messy policy or business question that depends on incompatible data sources and turn it into a defensible end-to-end pipeline with documented assumptions.
+- I can build the analytical scaffolding (loaders → joins → metrics → scenarios) that lets a non-technical reader trace every number back to its source.
+- I bring quantitative rigor without obscuring it — the figures are designed for a policymaker, not a fellow data scientist, and the assumptions live in the captions.`,
+    metadata: {
+      topic_tags: [
+        'AI Governance',
+        'AGI scenarios',
+        'labor market',
+        'data pipeline',
+        'cross-country analysis',
+        'Eloundou 2024',
+        'Eurostat LFS',
+        'BLS crosswalk',
+      ],
+      skills_demonstrated: [
+        'Python (pandas, numpy, matplotlib)',
+        'data integration across incompatible classification systems',
+        'scenario modeling under uncertainty',
+        'reproducible research pipelines',
+        'publication-grade data visualization',
+        'academic methodology',
+      ],
+      honesty_notes: [
+        'AGI capability multipliers (2x/5x/10x) are illustrative thought experiments, not empirical forecasts',
+        'I did not author the literature review or policy implications sections — teammates own those',
+        'Eloundou exposure scores and BLS crosswalk are published external artifacts I integrated, not my work',
+        'Repo is currently private per seminar confidentiality rules; public after July 17, 2026 paper submission',
+      ],
+    },
+  },
+
+  // ---------- 6. Repolens --------------------------------------------------
+  {
+    id: 'project-repolens',
+    type: 'project',
+    text: `Repolens — Agentic GitHub Repo Audit System (May–June 2026)
+
+## SITUATION
+
+Engineers regularly need to evaluate unfamiliar GitHub repositories — for dependency selection, due diligence before adopting a library, onboarding into a legacy codebase, or open-source contribution decisions. The current workflow is manual: skim the README, click through file structure, check commit graphs, eyeball the issues tab. It takes thirty minutes and produces an inconsistent gut feeling. I wanted a tool that produces a structured, defensible audit in two minutes — and that uses agentic AI in a way I could explain end-to-end.
+
+## TASK
+
+Build an agentic AI system that audits any GitHub repository across five dimensions (architecture, security, documentation, maintenance, testing), returns structured Pydantic outputs, and renders the results in an interactive dashboard. The system should be a learning vehicle for production-grade LangChain + LangGraph + MCP orchestration — concepts I want fluent before applying to AI/Agentic engineering roles. Ship a working V1 in fourteen days (May 22 – June 5, 2026) as a public portfolio project.
+
+## ACTION
+
+Built repolens at github.com/Haichennn/repolens. Stack: Python backend (FastAPI + LangChain + LangGraph + Pydantic), MCP server for external data lookups, Next.js + Tailwind frontend dashboard, deployed on Vercel + Railway.
+
+**Agent architecture** (LangGraph orchestration): one state-passing graph where five audit nodes run against shared repository state. Each node is a structured-output LangChain agent — the same node pattern, swapping prompts and evaluation criteria per dimension. State is a TypedDict (\`RepoState\`) that accumulates audit results so the frontend can render all five together.
+
+**Five audit dimensions, each a sub-agent with its own Pydantic schema**:
+- Documentation: README completeness, structure, audience-fit, doc hints (CONTRIBUTING, /docs)
+- Architecture: file organization, framework choices, configuration hygiene, language detection
+- Maintenance: commit recency, contributor count, bus-factor risk, release cadence, with stars/forks as context calibration (not scoring input)
+- Testing: test-folder presence, test-to-source ratio, framework detection (pytest/jest/vitest), CI/CD config, coverage badge
+- Security: dependency vulnerabilities via MCP server lookups against a mocked CVE database
+
+**Custom MCP server** (in active development, Day 5 of sprint): exposes two mock data sources to the agent — a CVE database for vulnerability lookups by package name and version, and a package registry for metadata (license, latest version, maintenance status). The Security audit node calls these via Anthropic's Model Context Protocol — a 2024 protocol that standardizes how LLMs connect to external tools.
+
+**Structured output discipline**: every audit node returns a Pydantic object — \`DocumentationAudit\`, \`ArchitectureAudit\`, etc. — with fields like \`score\` (0–100), \`severity\` (good/warning/critical enum), \`findings\` (evidence-cited bullet list), \`recommendations\` (prioritized, actionable). LangChain's \`with_structured_output\` guarantees schema compliance, so the frontend can render fields without parsing free-form text.
+
+**Engineering hygiene through the sprint**:
+- Day-by-day incremental commits to GitHub (not one batch dump) so the build journey is visible to anyone reading the commit history
+- ROADMAP.md publicly tracks V1 scope, V2 backlog (decision-memo generator, dependency due-diligence, comparative ranking), and V3 vision
+- IDEAS.md captures brainstorm items during the sprint with an explicit process rule: "no idea evaluation during V1 sprint" — to prevent scope creep
+- Dogfooding: I run the agent against my own Repolens repo each day. The agent flagged my missing tests, missing CI config, and a real bug in my own test-file detection logic — and the bug fix moved the FastAPI testing score from 55 → 85 (5-line refactor: substring matching to path-segment matching)
+
+**Deliberate non-ownership**: the agent reasoning is Claude (claude-sonnet-4-5). I designed the prompts, schemas, orchestration, and evaluation criteria — but the synthesis itself is the model. I built the MCP server scaffolding but the protocol specification is Anthropic's. I am not claiming I invented agent orchestration — I am demonstrating I can ship production-shaped agentic systems with current 2026 tooling.
+
+## RESULT
+
+(In active development; V1 ship target June 5, 2026.) Live at github.com/Haichennn/repolens with day-by-day commit history. Four of five audit nodes pass end-to-end testing against multiple real repos (own repo, FastAPI, LangGraph). Architecture audit gives FastAPI 92/100, my own scaffolded repo 42/100, calibrated against codebase state. Testing audit correctly identifies that FastAPI has 625 test files for 521 source files (120% test-to-source ratio) — after fixing the path-segment detection bug. The Pydantic schemas, the LangGraph state-passing pattern, and the structured-output discipline transfer directly to enterprise agentic projects.
+
+## WHAT I LEARNED
+
+- Structured output is the unlock for agentic systems that downstream UIs can render. Free-form text from an LLM is a demo; \`with_structured_output(PydanticClass)\` is a product.
+- Popularity metrics (stars, forks) should be context calibration, not scoring input — high stars on an abandoned repo should not inflate a maintenance score. The same data can serve different roles in different features; the discipline is naming which role explicitly.
+- Capturing brainstorm ideas in a file (IDEAS.md) is a cheap way to honor your future self without derailing your current sprint. Every "what if we also…" gets archived, not evaluated.
+- A bug found by dogfooding is more credible than a bug found by tests. When my own tool told me my test count was 38 (it should have been 625), I fixed five lines of code and the FastAPI testing score moved from warning to good. That story is worth more in an interview than any benchmark.
+
+## WHAT I CAN CONTRIBUTE
+
+- I can scaffold an agentic system end-to-end: schema design (Pydantic), orchestration (LangGraph), structured output (LangChain), external tool integration (MCP), dashboard rendering (Next.js).
+- I treat agents as products, not demos: I think about who reads the output (engineers, recruiters, decision-makers), what schema makes it renderable, what gets stored vs streamed, what fails gracefully.
+- I ship in public with day-by-day commits and an explicit ROADMAP, so my work is auditable from the codebase — the same discipline I would bring to a team repository.`,
+    metadata: {
+      topic_tags: [
+        'agentic AI',
+        'LangChain',
+        'LangGraph',
+        'MCP',
+        'Model Context Protocol',
+        'structured output',
+        'Pydantic',
+        'GitHub repo audit',
+        'production AI engineering',
+      ],
+      skills_demonstrated: [
+        'LangGraph state-passing graph orchestration',
+        'LangChain with_structured_output for schema-guaranteed LLM responses',
+        'Pydantic schema design for multi-dimensional audits',
+        'MCP server implementation (Anthropic Model Context Protocol)',
+        'FastAPI backend + Next.js dashboard architecture',
+        'agent prompt engineering with evidence-cited findings',
+        'dogfooding-driven bug discovery',
+        'incremental shipping with public commit history',
+      ],
+      honesty_notes: [
+        'In active development — V1 ship target June 5, 2026; V2 features (comparative ranking, decision memo, dependency due-diligence) are in ROADMAP backlog, not yet built',
+        'Agent reasoning is Claude (claude-sonnet-4-5); I designed prompts, schemas, orchestration but not the model itself',
+        'The MCP protocol specification is Anthropic\'s; I built the server scaffolding around it',
+        'Audit scores are calibrated to be evidence-cited, but they are still LLM-generated assessments — not formal verification',
+      ],
+    },
+  },
+
   // ===========================================================================
-  // SKILL CHUNKS (5-8)
+  // SKILL CHUNKS (7-10)
   // ===========================================================================
 
   // ---------- 5. LLM Integration in Production -----------------------------
@@ -737,7 +904,7 @@ Conversely: "stakeholder wants all-the-charts-please" produces dashboards that o
   },
 
   // ===========================================================================
-  // REFLECTION CHUNKS (9-11)
+  // REFLECTION CHUNKS (11-13)
   // ===========================================================================
 
   // ---------- 9. Why Wirtschaftsinformatik --------------------------------
@@ -1048,5 +1215,5 @@ RETRIEVED CONTEXT:
 //   - Layer 2 (UI): chat component footer always shows contact link
 //   - Both layers point to CONTACT_INFO.email — single source of truth
 //
-// Total: 11 chunks + system prompt template + contact info. ~12,000 words.
+// Total: 13 chunks + system prompt template + contact info. ~14,000 words.
 // =============================================================================
