@@ -1,0 +1,24 @@
+{
+  "version": "v1-2026-05-24",
+  "config_version": "v1-baseline",
+  "notes": "17-query labeled set covering HR/interviewer (Q1-Q8), technical interviewer (Q9-Q13), recruiter (Q14-Q17). Q13 is expected to underperform — no dedicated KB chunk for RAG evaluation work yet.",
+  "queries": [
+    { "id": "Q1",  "persona": "hr",         "query": "Tell me about your WayBack project",                                     "relevant_chunks": ["project-wayback"] },
+    { "id": "Q2",  "persona": "hr",         "query": "Have you built any tools with LLMs?",                                    "relevant_chunks": ["project-audit-translator", "project-repolens", "skill-llm-integration"] },
+    { "id": "Q3",  "persona": "hr",         "query": "Have you worked with insurance data?",                                   "relevant_chunks": ["project-pc-insurance-dashboard"] },
+    { "id": "Q4",  "persona": "hr",         "query": "Tell me about your LLM application experience",                          "relevant_chunks": ["skill-llm-integration", "project-repolens", "project-audit-translator"] },
+    { "id": "Q5",  "persona": "hr",         "query": "What's your experience with frontend development?",                      "relevant_chunks": ["skill-frontend-mobile-ux", "project-wayback", "project-joanduan-dev"] },
+    { "id": "Q6",  "persona": "hr",         "query": "Why did you choose Wirtschaftsinformatik?",                              "relevant_chunks": ["reflection-why-wirtschaftsinformatik"] },
+    { "id": "Q7",  "persona": "hr",         "query": "How do you think about combining business and technology?",              "relevant_chunks": ["skill-tech-business-bridge", "reflection-why-wirtschaftsinformatik", "project-audit-translator"] },
+    { "id": "Q8",  "persona": "hr",         "query": "What kind of team are you looking for?",                                 "relevant_chunks": ["reflection-team-fit"] },
+    { "id": "Q9",  "persona": "technical",  "query": "How did you handle malformed JSON responses from the LLM?",              "relevant_chunks": ["project-audit-translator", "skill-llm-integration"] },
+    { "id": "Q10", "persona": "technical",  "query": "What architectural decisions did you make when working with your teammate on WayBack?", "relevant_chunks": ["project-wayback"] },
+    { "id": "Q11", "persona": "technical",  "query": "How do you decide when to use a Claude Artifact versus a full deployment?", "relevant_chunks": ["project-audit-translator", "skill-llm-integration"] },
+    { "id": "Q12", "persona": "technical",  "query": "Walk me through your agent orchestration in Repolens",                   "relevant_chunks": ["project-repolens"] },
+    { "id": "Q13", "persona": "technical",  "query": "How do you approach evaluating retrieval quality in a RAG system?",      "relevant_chunks": ["project-joanduan-dev", "skill-llm-integration"], "expected_to_fail": true, "note": "No dedicated KB chunk for RAG evaluation infrastructure yet — this query is intentionally included to surface the gap." },
+    { "id": "Q14", "persona": "recruiter",  "query": "What's the top thing you've built recently?",                            "relevant_chunks": ["project-repolens", "project-joanduan-dev", "project-audit-translator"] },
+    { "id": "Q15", "persona": "recruiter",  "query": "Why should we hire you for an AI internship?",                           "relevant_chunks": ["skill-llm-integration", "skill-tech-business-bridge", "reflection-why-i-build"] },
+    { "id": "Q16", "persona": "recruiter",  "query": "Do you have any business or domain knowledge in insurance?",             "relevant_chunks": ["project-pc-insurance-dashboard", "skill-tech-business-bridge"] },
+    { "id": "Q17", "persona": "recruiter",  "query": "Tell me about a project where you had to navigate teamwork challenges",  "relevant_chunks": ["project-wayback", "reflection-team-fit"] }
+  ]
+}

@@ -1,7 +1,7 @@
 // =============================================================================
 // Interview Me — Knowledge Base
 // =============================================================================
-// 13 chunks total: 6 PROJECT + 4 SKILL + 3 REFLECTION
+// 15 chunks total: 8 PROJECT + 4 SKILL + 3 REFLECTION
 // All chunks use STAR structure (Situation / Task / Action / Result)
 // Plus "What I learned" and "What I can contribute" closer sections
 //
@@ -28,7 +28,7 @@ export interface KnowledgeChunk {
 export const knowledgeBase: KnowledgeChunk[] = [
 
   // ===========================================================================
-  // PROJECT CHUNKS (1-6)
+  // PROJECT CHUNKS (1-8)
   // ===========================================================================
 
   // ---------- 1. WayBack ---------------------------------------------------
@@ -557,6 +557,188 @@ Local repo audit (pre-push quality check without GitHub push), audit history wit
         'The MCP protocol specification is Anthropic\'s; I built the server scaffolding around it',
         'Audit scores are evidence-cited LLM assessments, not formal verification — stated explicitly in the UI',
         'Repolens is in active development beyond the initial 14-day sprint — V3 roadmap items (local audit, score trajectory, Go/Rust/Java) are not yet built',
+      ],
+    },
+  },
+
+  // ---------- 7. Audit Translator ------------------------------------------
+  {
+    id: 'project-audit-translator',
+    type: 'project',
+    text: `Audit Translator — Stakeholder-Aware Audit Finding Translator (Late April 2026)
+
+## SITUATION
+
+I was curious about a specific question in applied LLM work: can an LLM be reliably used to render the same source finding in three different stakeholder voices, with transparent reasoning, in a way that is renderable by a UI rather than free-form prose? Audit findings live in a language register few stakeholders fully share — too technical for the C-suite, too generic for the engineers, too policy-laden for the people who actually have to act on them. I wanted to ship the smallest prototype that would prove out the design.
+
+## TASK
+
+Build a small but production-shaped prototype that takes an audit finding (e.g. "Control deficiency in IT general controls related to logical access — privileged user accounts not subject to periodic review per IAM policy section 4.2") and outputs three translations at once: CFO (business risk language), CTO (technical root cause and remediation), and Affected Team (plain-language actions). Each translation must come with a one-sentence rationale the user can expand on demand. Ship it in a single weekend.
+
+## ACTION
+
+Built and shipped Audit Translator as a Claude Artifact at claude.ai/public/artifacts/a359e54c-5586-452e-b5cf-b2f6c25dd677 — a single-file React component using the Anthropic API via the Artifact runtime. Stack: React, Tailwind, claude-sonnet-4-5, no external dependencies beyond the standard Artifact environment.
+
+**Four engineering decisions that shaped the prototype.**
+
+1. **Role-conditioned prompt with a single structured schema.** One LLM call returns all three translations simultaneously in a typed JSON object with fields cfo / cto / team, each containing text and reasoning. The prompt names each audience explicitly with their concerns (CFO = financial impact, risk exposure, regulatory consequences; CTO = technical root cause, affected systems, remediation; Affected Team = day-to-day actions). One call instead of three guarantees the three views are derived from the same model state, which is the property that makes the comparison meaningful instead of three independent generations that might disagree on the underlying fact pattern.
+
+2. **Defensive parsing as preventive design.** The Anthropic API does not guarantee strict JSON — markdown fences, prose preambles, and trailing commentary all happen. I built a three-layer parser: strip markdown fences, regex-extract the outermost JSON object, then shape-validate the parsed result (require .cfo, .cto, .team keys) before rendering. This is not a fix for an observed production failure; usage was small and no malformed JSON case actually triggered the recovery path. It is the disposition I want to bring to LLM systems: assume the model output is data with a contract, not text, and write a parser that can survive contract violations gracefully.
+
+3. **Collapsible reasoning UX.** Each of the three result cards renders the translation prominently and hides the per-translation rationale behind a "Why this version" toggle. This is the design decision I am most proud of, because it embodies a stance on how LLM outputs should be consumed: the translation is the primary artifact, the reasoning is auditable on demand. Users don't have to read it to use the result, but they can if they want to challenge or learn from the model's choices.
+
+4. **Claude Artifact as deliberate prototype scope.** I chose the Artifact runtime over a full Next.js + Vercel deployment, even though I knew how to ship the latter. The reason is scope discipline: the proof-of-concept value lives entirely in the design (the schema, the prompt, the parser, the UX), not in hosting, auth, CORS, or key management. Choosing the smaller surface meant the entire weekend could be design iteration. This is the same kind of trade-off Praktikum candidates often get wrong by reaching for full-stack patterns when the value is in a 200-line prototype that demonstrates a concept.
+
+**Production-shaped i18n.** EN/DE bilingual from the start. The DE prompt instruction explicitly preserves standard German professional terminology (ITGC, IAM, recertification, significant deficiency, material weakness) instead of over-translating to local German equivalents — these terms are loanwords in German audit and compliance contexts and over-translating sounds wrong to native professional ears. This was a small detail with disproportionate signaling value when distributing to German employers.
+
+**Distribution.** Shipped as a self-contained Claude Artifact (live URL above), packaged into a 3-page showcase PDF (Audit_Translator_Showcase_RoleAgnostic.pdf), and used as a portfolio attachment in Praktikum applications including Allianz Consulting and Allianz AI Factory. Per-role tagged variants of the PDF tailor the framing to each application.
+
+## RESULT
+
+Live as a public Claude Artifact (URL above). Used as a portfolio attachment across multiple Praktikum submissions in May 2026 (Allianz AI Factory, Allianz Consulting, others). The artifact and the PDF together let HR reviewers test the design themselves with one click — no install, no signup. The translation quality holds across the three included examples (IT access review, revenue cutoff, segregation of duties) and across EN/DE.
+
+## WHAT I LEARNED
+
+- LLMs are most useful when treated as transformation engines with a typed contract, not as free-form text generators. The unlock is structured output: a typed schema with cfo / cto / team fields makes the response renderable as three side-by-side cards without parsing prose. Free-form text from an LLM is a demo; schema-bound output is a product.
+- Stakeholder-aware translation is a generalizable design pattern, not an audit-specific feature. The same architecture (one source → role-conditioned prompt → structured multi-perspective output) applies to any document where the source and the reader have different vocabularies: incident reports, regulatory filings, technical specs, even diagnoses. The Audit Translator schema is a reusable shape, not a one-off.
+- A small productionized prototype distributed with a live URL is more defensible in an application than a polished mock-up. HR reviewers can click the Artifact and see the system work in 30 seconds. That is the artifact that opens conversations; the 3-page PDF gives the framing, the live link earns the credibility.
+- "Translating technical findings for HR" is the literal job description of Wirtschaftsinformatik. Building a tool that does this — and then using the tool itself as the cover for a Wirtschaftsinformatik student's application — is a non-accidental match between the artifact and the credential it accompanies.
+
+## WHAT I CAN CONTRIBUTE
+
+- I can design role-conditioned LLM prompts that produce structured, schema-bound output for downstream UIs. I have shipped the pattern in production-shaped form and can reproduce it on different stakeholder maps (e.g. underwriter / risk manager / claim handler instead of CFO / CTO / team).
+- I treat LLM output as data with a contract, not text. Defensive parsing, shape validation, and graceful error states are part of the baseline I bring to any LLM integration work.
+- I know how to scope a prototype to the smallest surface that proves the design. Choosing a Claude Artifact over a full backend is the kind of decision I would bring to a team that needs a fast, defensible proof of concept before investing in the production version.
+- I build with the German professional context in mind (i18n with preserved English loanwords for technical vocabulary), which matters for DAX-tier AI tooling where the end users live and work in both languages.
+`,
+    metadata: {
+      topic_tags: [
+        'Audit Translator',
+        'stakeholder translation',
+        'LLM as transformation engine',
+        'structured JSON output',
+        'defensive parsing',
+        'collapsible reasoning UX',
+        'Claude Artifact',
+        'Anthropic API',
+        'claude-sonnet-4-5',
+        'audit findings',
+        'CFO CTO Team',
+        'i18n',
+        'EN DE bilingual',
+        'Wirtschaftsinformatik',
+        'weekend-sprint',
+        'prototype scoping',
+      ],
+      skills_demonstrated: [
+        'designing role-conditioned prompts for the same source input (CFO, CTO, Affected Team)',
+        'structured JSON output schema design for renderable LLM responses',
+        'defensive parsing for non-strict JSON (markdown fence stripping, regex extraction, shape validation)',
+        'collapsible reasoning UX exposing per-translation rationale',
+        'intentional prototype scoping (Claude Artifact instead of full backend) to focus on the design problem',
+        'production-shaped i18n (EN/DE) with explicit instructions to preserve standard German professional terminology',
+        'treating LLMs as transformation engines rather than free-form text generators',
+        'self-conceived portfolio piece distributed through PDF showcases across multiple Praktikum applications',
+      ],
+      honesty_notes: [
+        'Audit Translator is a single-file React prototype hosted as a Claude Artifact at claude.ai/public/artifacts. The Anthropic API call is proxied by the Artifact runtime, not by a backend I built or operate.',
+        'The Claude Artifact scope is intentional — the proof-of-concept value lives in the design (3-stakeholder schema, defensive parsing, collapsible reasoning UX, EN/DE i18n), not in hosting or auth.',
+        'Defensive parsing in the code is preventive design, not a fix for an observed production failure — usage volume was small and no malformed JSON case was caught in production. The defensive layers (markdown fence stripping, regex JSON extraction, shape validation) are best practices applied proactively, not battle-tested under load.',
+        'The translation quality itself is Claude (claude-sonnet-4-5) — I designed the prompt, the schema, the stakeholder personas, and the reasoning UX, but the translation output is the model.',
+        "The 'Affected Team' persona is a deliberate naming choice over the more common 'Engineer' or 'Operations' — audit findings affect people across functions, and naming the recipient by role rather than department keeps the prompt reusable across audit types.",
+      ],
+    },
+  },
+
+  // ---------- 8. P&C Insurance Dashboard -----------------------------------
+  {
+    id: 'project-pc-insurance-dashboard',
+    type: 'project',
+    text: `P&C Insurance Analytics Dashboard — freMTPL2 (May 2026)
+
+## SITUATION
+
+I was curious about a specific question: is the P&C insurance industry actually as opaque as it looks from outside, or are the underlying metrics decomposable in a way a Wirtschaftsinformatik student can render in a weekend? Combined Ratio, Loss Ratio, BonusMalus — these are terms you read in DAX annual reports without ever seeing the math. I wanted to find out whether shipping a working dashboard on a public actuarial dataset would teach me the domain faster than reading another whitepaper. The Praktikum application window (Allianz, Munich Re, ERGO) was the catalyst that made me publish what I built, but the curiosity about the domain came first.
+
+## TASK
+
+Build a portfolio-scope analytical dashboard on the freMTPL2 dataset (Charpentier 2014, French Motor TPL) that surfaces the standard P&C profitability KPIs in a way a non-actuarial reviewer can read in 60 seconds, and a domain reviewer can trust. Four views, deployed live, end-to-end in a weekend.
+
+## ACTION
+
+Built and shipped the P&C Insurance Analytics Dashboard, live at insurance-dashboard-site.vercel.app. Stack: Python, pandas, Plotly for interactive visualizations, deployed on Vercel (atypical for a Python data app — chose it for full-code ownership and zero-config deployment over a Streamlit Cloud or Hugging Face Spaces alternative).
+
+**Dataset.** freMTPL2 is the public French Motor TPL benchmark released with Charpentier's 2014 *Computational Actuarial Science with R* — the de facto teaching dataset for European P&C analytics. Using a known benchmark instead of a private dataset means anyone reviewing the dashboard can verify the numbers against the published literature, which is the right tradeoff for a portfolio piece.
+
+**Four views, each decomposing a standard P&C KPI.**
+
+1. **Combined Ratio overview.** Combined Ratio = Loss Ratio + Expense Ratio. The overview decomposes the headline number into its two drivers and shows how each moves across segments. Reviewers see immediately whether profitability is being driven by claim losses or by acquisition/admin costs — the same question that opens any P&C earnings call.
+
+2. **Regional profitability.** France's TPL portfolio aggregated by region, surfacing the Combined Ratio dispersion geographically. A heatmap plus a ranked table together let a reviewer scan "where is this portfolio losing money" in one glance, then drill into specific underperforming regions. Descriptive, not causal — the underlying reason a region underperforms (urban density, vehicle mix, fraud exposure) would require additional features to attribute properly.
+
+3. **DrivAge × VehAge risk heatmap.** Two of the most important rating variables in motor TPL, crossed. The heatmap shows claim frequency intensified in the corners (young drivers in old cars, old drivers in new cars — both elevated risk segments for very different reasons). This is the visualization I use to explain why interactive exploration beats static reports: the structure of risk in two dimensions is invisible in a one-variable bar chart, and it is the kind of pattern that drives actual pricing decisions.
+
+4. **BonusMalus retention dynamics.** BonusMalus is the European no-claims discount system — drivers with no claims accumulate a discount, drivers with claims accumulate a surcharge. The retention view looks at how policyholders move through the BonusMalus distribution over time, which is a proxy for both portfolio quality and customer behavior. Underwriting and customer analytics teams both care about this curve.
+
+**KPI selection — honest framing.** The four KPIs (Combined Ratio with its decomposition, regional Combined Ratio dispersion, DrivAge × VehAge frequency, BonusMalus retention) follow standard P&C insurance analytics conventions. These are not metrics I invented — they are textbook P&C drivers, and my contribution is the implementation: turning the standard KPI set into an interactive, deployable dashboard on a specific real dataset, not the metric selection itself.
+
+**Tool tradeoff.** I am aware that DAX-tier insurance BI teams (Allianz, Munich Re, ERGO) standardize on Tableau, Power BI, or Looker rather than Plotly + Vercel. The choice here was scope: a portfolio piece should be code I fully own and can extend, not a snapshot of a closed BI tool. The interactive view layer (Plotly) preserves the "click and explore" UX a BI dashboard would have, while keeping the implementation in a stack I can show in a code review.
+
+## RESULT
+
+Live at insurance-dashboard-site.vercel.app. Listed as the 3rd project on CV V4 (May 2026). Used as a portfolio attachment in Praktikum applications for Allianz AI Factory, Allianz Underwriting Data, Allianz Consulting, Munich Re Underwriting, Munich Re AI Department, and several others where insurance domain fluency is a fit-check signal. The combination of a live URL plus the screenshot in the application PDF lets the reviewer test the dashboard themselves, instead of trusting a static screenshot.
+
+## WHAT I LEARNED
+
+- Insurance is not a black box. The headline KPIs (Combined Ratio, Loss Ratio, Expense Ratio, BonusMalus retention) are decomposable into a small number of drivers, and once decomposed they are visualizable in a way a non-actuarial reader can follow. The mystique of the industry mostly comes from vocabulary, not from analytical complexity at the dashboard level.
+- Interactive exploration surfaces structure that static reports hide. A two-variable heatmap (DrivAge × VehAge) shows risk concentration that no one-variable bar chart can. When the structure of the data is multi-dimensional, the visualization has to be too.
+- Insurance domain fluency can be loaded into a portfolio without an internship. A weekend on a public benchmark dataset, paired with a live deployable dashboard, demonstrates a credible starting point. The follow-on conversation with the team is what teaches actuarial depth — but you need a starting point to get to that conversation.
+- AI-native engineering plus an insurance domain pick is an unusual positioning. Most Wirtschaftsinformatik students applying to Allianz / Munich Re lead with "Java, SQL, basic ML." Leading with shipped LLM applications plus a shipped insurance dashboard is a different applicant profile — adjacent to actuarial and adjacent to product, in the gap DAX-tier insurance AI teams are explicitly trying to staff.
+
+## WHAT I CAN CONTRIBUTE
+
+- I can read P&C KPIs in their native vocabulary (Combined Ratio decomposition, Loss Ratio drivers, BonusMalus dynamics, regional dispersion) and turn them into interactive surfaces business stakeholders can use. The implementation muscle is here; the domain depth comes from working with the team.
+- I treat domain credibility as a deliverable, not a soft skill. The freMTPL2 dataset choice is deliberate — a public benchmark lets reviewers verify my work against the published literature, instead of trusting an unauditable private analysis.
+- I can build the lightweight analytical layer between raw data (pandas) and end-user views (Plotly), and ship it live (Vercel). For a Werkstudent or Praktikum role where the team needs hands on the data exploration tier rather than the production claims platform, this is the right shape of contribution.
+- I bring an explicit awareness of tool tradeoffs (Plotly vs Tableau, Vercel vs Streamlit Cloud) so I can integrate into a team's existing BI stack rather than insisting on my own choices.
+`,
+    metadata: {
+      topic_tags: [
+        'P&C insurance',
+        'Combined Ratio',
+        'Loss Ratio',
+        'Expense Ratio',
+        'freMTPL2',
+        'Charpentier 2014',
+        'French motor TPL',
+        'BonusMalus',
+        'DrivAge VehAge heatmap',
+        'regional profitability',
+        'Python',
+        'pandas',
+        'Plotly',
+        'Vercel',
+        'actuarial KPIs',
+        'weekend-sprint',
+        'insurance domain',
+      ],
+      skills_demonstrated: [
+        'translating standard P&C insurance KPIs into interactive visualizations',
+        'data exploration on real actuarial dataset (freMTPL2, Charpentier 2014)',
+        'Combined Ratio decomposition (Loss Ratio + Expense Ratio)',
+        'two-dimensional risk segmentation (DrivAge × VehAge heatmap)',
+        'BonusMalus retention dynamics analysis',
+        'regional profitability surfacing through geographical aggregation',
+        'Python data pipeline (pandas) + interactive viz layer (Plotly)',
+        'deploying a Python data application on Vercel (non-default stack choice)',
+        'scoping a portfolio piece to insurance domain to signal targeted job fit',
+      ],
+      honesty_notes: [
+        'The KPI selection (Combined Ratio, Loss Ratio, Expense Ratio, BonusMalus retention) follows standard P&C insurance analytics conventions — these are textbook P&C metrics, not invented by me. My contribution is the implementation: turning the standard KPIs into an interactive dashboard on a specific public dataset.',
+        "freMTPL2 is a public actuarial benchmark dataset released with Charpentier's 2014 textbook (Computational Actuarial Science with R). I did not collect or curate the data; I analyzed an existing, well-known dataset.",
+        'The dashboard is a portfolio-scope analytical surface, not a production claims system. It shows that I can read insurance KPIs, decompose them, and visualize the drivers — it does not show I have shipped an actuarial reserving model or rate-making engine. I would be a learner, not a senior, in those domains.',
+        'Some of the analytical interpretations on the dashboard (e.g. why a specific region underperforms, why a DrivAge × VehAge cell is high-risk) are descriptive observations from the data, not causal claims. Causal attribution would require additional features or a structural model.',
+        'Plotly is appropriate for this scope. I am aware Tableau, Power BI, and Looker are more common in DAX-tier insurance BI teams; choosing Plotly was a tradeoff for Vercel deployability and full code ownership, not because Plotly is the right enterprise choice.',
       ],
     },
   },
