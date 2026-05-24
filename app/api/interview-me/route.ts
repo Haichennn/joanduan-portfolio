@@ -10,11 +10,15 @@
  */
 
 import Anthropic from "@anthropic-ai/sdk";
+import { waitUntil } from "@vercel/functions";
 import knowledgeBase from "../../lib/knowledge-base-embedded.json";
 import { SYSTEM_PROMPT_TEMPLATE } from "../../lib/knowledge-base-raw";
+import { logConversation } from "@/lib/logging";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
+
+const CONFIG_VERSION = "v1-baseline";
 
 // ---- Types ------------------------------------------------------------------
 type Chunk = {
@@ -110,6 +114,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const startTime = Date.now();
+
     // Step 1: Embed query
     const queryEmbedding = await embedQuery(query, voyageKey);
 
@@ -129,21 +135,75 @@ export async function POST(request: Request) {
       messages: [{ role: "user", content: query }],
     });
 
+    const MODEL_NAME = "claude-sonnet-4-5";
     const encoder = new TextEncoder();
+
     const readable = new ReadableStream({
       async start(controller) {
+        let responseBuffer = "";
+        let outputTokens: number | null = null;
+        let inputTokens: number | null = null;
+
         try {
           for await (const event of stream) {
             if (
               event.type === "content_block_delta" &&
               event.delta.type === "text_delta"
             ) {
+              responseBuffer += event.delta.text;
               controller.enqueue(encoder.encode(event.delta.text));
+            } else if (event.type === "message_start") {
+              inputTokens = event.message.usage?.input_tokens ?? null;
+            } else if (event.type === "message_delta") {
+              outputTokens = event.usage?.output_tokens ?? null;
             }
           }
           controller.close();
+
+          waitUntil(
+            logConversation({
+              session_id: null,
+              user_query: query,
+              assistant_response: responseBuffer,
+              model: MODEL_NAME,
+              config_version: CONFIG_VERSION,
+              latency_ms: Date.now() - startTime,
+              prompt_tokens: inputTokens,
+              completion_tokens: outputTokens,
+              error: null,
+              retrievals: topChunks.map((c, i) => ({
+                rank: i + 1,
+                chunk_id: c.id,
+                chunk_text: c.text,
+                similarity_score: c.score,
+                source: c.id,
+              })),
+            })
+          );
         } catch (err) {
+          const errMsg = err instanceof Error ? err.message : String(err);
           controller.error(err);
+
+          waitUntil(
+            logConversation({
+              session_id: null,
+              user_query: query,
+              assistant_response: responseBuffer || null,
+              model: MODEL_NAME,
+              config_version: CONFIG_VERSION,
+              latency_ms: Date.now() - startTime,
+              prompt_tokens: inputTokens,
+              completion_tokens: outputTokens,
+              error: errMsg,
+              retrievals: topChunks.map((c, i) => ({
+                rank: i + 1,
+                chunk_id: c.id,
+                chunk_text: c.text,
+                similarity_score: c.score,
+                source: c.id,
+              })),
+            })
+          );
         }
       },
     });
