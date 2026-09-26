@@ -1,5 +1,6 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { parseArgs } from 'node:util'
 
 import knowledgeBase from '../../app/lib/knowledge-base-embedded.json' assert { type: 'json' }
 
@@ -10,8 +11,20 @@ const REQUEST_DELAY_MS = 200
 const TOP_K_VALUES = [1, 3, 5]
 const RETRIEVAL_K = Math.max(...TOP_K_VALUES)
 
-const GROUND_TRUTH_PATH = resolve('scripts/eval/ground-truth.json')
+const DEFAULT_GROUND_TRUTH_PATH = 'scripts/eval/ground-truth.json'
 const OUTPUT_DIR = resolve('scripts/eval/results')
+
+// Optional run label, e.g. `npm run eval:retrieval -- --label v2-17-chunks`.
+// Defaults to the ground truth's config_version when omitted.
+// Optional ground truth file, e.g. `--ground-truth scripts/eval/ground-truth-v2.json`.
+// Defaults to the v1 ground truth when omitted.
+const { values: cliArgs } = parseArgs({
+  options: {
+    label: { type: 'string' },
+    'ground-truth': { type: 'string' },
+  },
+})
+const GROUND_TRUTH_PATH = resolve(cliArgs['ground-truth'] ?? DEFAULT_GROUND_TRUTH_PATH)
 
 if (!VOYAGE_API_KEY) {
   console.error('VOYAGE_API_KEY is missing. Add it to .env.local before running.')
@@ -49,6 +62,7 @@ type QueryResult = {
   relevant_chunks: string[]
   retrieved_chunks: Array<{ id: string; score: number; is_relevant: boolean }>
   recall_at: Record<number, number>
+  hit_at: Record<number, number>
   reciprocal_rank: number
   expected_to_fail?: boolean
 }
@@ -104,6 +118,12 @@ function computeRecallAtK(retrieved: Array<{ id: string }>, relevant: string[], 
   return relevant.length === 0 ? 0 : hits / relevant.length
 }
 
+// Hit@k: 1 if at least one relevant chunk is in the top k, else 0.
+// Unlike Recall@k it is not capped by the number of relevant chunks.
+function computeHitAtK(retrieved: Array<{ id: string }>, relevant: string[], k: number): number {
+  return retrieved.slice(0, k).some((r) => relevant.includes(r.id)) ? 1 : 0
+}
+
 function computeReciprocalRank(retrieved: Array<{ id: string }>, relevant: string[]): number {
   for (let i = 0; i < retrieved.length; i++) {
     if (relevant.includes(retrieved[i].id)) {
@@ -126,12 +146,13 @@ async function main() {
   const groundTruthRaw = await readFile(GROUND_TRUTH_PATH, 'utf-8')
   const groundTruth = JSON.parse(groundTruthRaw) as GroundTruth
   const chunks = (knowledgeBase as { chunks: Chunk[] }).chunks
+  const runLabel = cliArgs.label ?? groundTruth.config_version
 
   console.log('')
   console.log('========================================')
   console.log('Interview Me — Retrieval Evaluation')
   console.log('========================================')
-  console.log(`Config:         ${groundTruth.config_version}`)
+  console.log(`Config:         ${runLabel}`)
   console.log(`Ground truth:   ${groundTruth.version}`)
   console.log(`Queries:        ${groundTruth.queries.length}`)
   console.log(`KB chunks:      ${chunks.length}`)
@@ -152,6 +173,10 @@ async function main() {
     for (const k of TOP_K_VALUES) {
       recallAt[k] = computeRecallAtK(retrieved, q.relevant_chunks, k)
     }
+    const hitAt: Record<number, number> = {}
+    for (const k of TOP_K_VALUES) {
+      hitAt[k] = computeHitAtK(retrieved, q.relevant_chunks, k)
+    }
     const rr = computeReciprocalRank(retrieved, q.relevant_chunks)
     results.push({
       id: q.id,
@@ -160,11 +185,12 @@ async function main() {
       relevant_chunks: q.relevant_chunks,
       retrieved_chunks: retrievedAnnotated,
       recall_at: recallAt,
+      hit_at: hitAt,
       reciprocal_rank: rr,
       expected_to_fail: q.expected_to_fail,
     })
     const rrDisplay = rr === 0 ? '0.00' : rr.toFixed(2)
-    console.log(`R@1=${pct(recallAt[1])} R@3=${pct(recallAt[3])} R@5=${pct(recallAt[5])} RR=${rrDisplay}`)
+    console.log(`R@1=${pct(recallAt[1])} R@3=${pct(recallAt[3])} R@5=${pct(recallAt[5])} RR=${rrDisplay} H@1=${hitAt[1]} H@3=${hitAt[3]} H@5=${hitAt[5]}`)
     await new Promise((r) => setTimeout(r, REQUEST_DELAY_MS))
   }
 
@@ -180,7 +206,7 @@ async function main() {
       const mark = c.is_relevant ? ' ✓' : ''
       console.log(`    ${i + 1}. ${c.id.padEnd(40)} score=${c.score.toFixed(3)}${mark}`)
     })
-    console.log(`  R@1=${pct(r.recall_at[1])}  R@3=${pct(r.recall_at[3])}  R@5=${pct(r.recall_at[5])}  RR=${r.reciprocal_rank.toFixed(3)}`)
+    console.log(`  R@1=${pct(r.recall_at[1])}  R@3=${pct(r.recall_at[3])}  R@5=${pct(r.recall_at[5])}  RR=${r.reciprocal_rank.toFixed(3)}  H@1=${r.hit_at[1]}  H@3=${r.hit_at[3]}  H@5=${r.hit_at[5]}`)
     console.log('')
   }
 
@@ -192,6 +218,10 @@ async function main() {
   }
   const mrr = mean(results.map((r) => r.reciprocal_rank))
   console.log(`  MRR:             ${mrr.toFixed(3)}`)
+  for (const k of TOP_K_VALUES) {
+    const h = mean(results.map((res) => res.hit_at[k]))
+    console.log(`  Mean Hit@${k}:     ${pct(h)}`)
+  }
   console.log('')
 
   console.log('=== Aggregate by persona ===')
@@ -205,6 +235,10 @@ async function main() {
     }
     const personaMrr = mean(subset.map((r) => r.reciprocal_rank))
     console.log(`    MRR:  ${personaMrr.toFixed(3)}`)
+    for (const k of TOP_K_VALUES) {
+      const h = mean(subset.map((res) => res.hit_at[k]))
+      console.log(`    H@${k}:  ${pct(h)}`)
+    }
   }
   console.log('')
 
@@ -217,16 +251,20 @@ async function main() {
   }
   const filteredMrr = mean(filteredResults.map((r) => r.reciprocal_rank))
   console.log(`  MRR:             ${filteredMrr.toFixed(3)}`)
+  for (const k of TOP_K_VALUES) {
+    const h = mean(filteredResults.map((res) => res.hit_at[k]))
+    console.log(`  Mean Hit@${k}:     ${pct(h)}`)
+  }
   console.log('')
 
   await mkdir(OUTPUT_DIR, { recursive: true })
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
-  const outputPath = resolve(OUTPUT_DIR, `eval-${groundTruth.config_version}-${timestamp}.json`)
+  const outputPath = resolve(OUTPUT_DIR, `eval-${runLabel}-${timestamp}.json`)
   await writeFile(
     outputPath,
     JSON.stringify(
       {
-        config_version: groundTruth.config_version,
+        config_version: runLabel,
         ground_truth_version: groundTruth.version,
         timestamp: new Date().toISOString(),
         kb_chunk_count: chunks.length,
@@ -236,13 +274,33 @@ async function main() {
           recall_at_3: mean(results.map((r) => r.recall_at[3])),
           recall_at_5: mean(results.map((r) => r.recall_at[5])),
           mrr: mean(results.map((r) => r.reciprocal_rank)),
+          hit_at_1: mean(results.map((r) => r.hit_at[1])),
+          hit_at_3: mean(results.map((r) => r.hit_at[3])),
+          hit_at_5: mean(results.map((r) => r.hit_at[5])),
         },
         aggregate_excluding_expected_to_fail: {
           recall_at_1: mean(filteredResults.map((r) => r.recall_at[1])),
           recall_at_3: mean(filteredResults.map((r) => r.recall_at[3])),
           recall_at_5: mean(filteredResults.map((r) => r.recall_at[5])),
           mrr: mean(filteredResults.map((r) => r.reciprocal_rank)),
+          hit_at_1: mean(filteredResults.map((r) => r.hit_at[1])),
+          hit_at_3: mean(filteredResults.map((r) => r.hit_at[3])),
+          hit_at_5: mean(filteredResults.map((r) => r.hit_at[5])),
         },
+        aggregate_by_persona_hit: Object.fromEntries(
+          personas.map((persona) => {
+            const subset = results.filter((r) => r.persona === persona)
+            return [
+              persona,
+              {
+                n: subset.length,
+                hit_at_1: mean(subset.map((r) => r.hit_at[1])),
+                hit_at_3: mean(subset.map((r) => r.hit_at[3])),
+                hit_at_5: mean(subset.map((r) => r.hit_at[5])),
+              },
+            ]
+          })
+        ),
         per_query: results,
       },
       null,

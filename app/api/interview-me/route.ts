@@ -25,7 +25,7 @@ type Chunk = {
   id: string;
   type: string;
   text: string;
-  metadata: { topic_tags: string[]; honesty_notes: string[] };
+  metadata: { topic_tags: string[]; honesty_notes?: string[] };
   embedding: number[];
 };
 type ScoredChunk = Chunk & { score: number };
@@ -82,8 +82,14 @@ function retrieveTopK(queryEmbedding: number[], k: number = 3): ScoredChunk[] {
 function buildContextBlock(chunks: ScoredChunk[]): string {
   return chunks
     .map(
-      (c, i) =>
-        `--- Context ${i + 1} (relevance: ${c.score.toFixed(3)}, source: ${c.id}) ---\n${c.text}`
+      (c, i) => {
+        const block = `--- Context ${i + 1} (relevance: ${c.score.toFixed(3)}, source: ${c.id}) ---\n${c.text}`;
+        const notes = c.metadata?.honesty_notes ?? [];
+        if (notes.length === 0) return block;
+        return `${block}\n\nNotes for answering about this chunk:\n${notes
+          .map((n) => `- ${n}`)
+          .join("\n")}`;
+      }
     )
     .join("\n\n");
 }

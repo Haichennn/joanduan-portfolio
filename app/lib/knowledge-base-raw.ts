@@ -1,7 +1,7 @@
 // =============================================================================
 // Interview Me — Knowledge Base
 // =============================================================================
-// 15 chunks total: 8 PROJECT + 4 SKILL + 3 REFLECTION
+// 17 chunks total: 9 PROJECT + 1 EXPERIENCE + 4 SKILL + 3 REFLECTION
 // All chunks use STAR structure (Situation / Task / Action / Result)
 // Plus "What I learned" and "What I can contribute" closer sections
 //
@@ -16,7 +16,7 @@
 
 export interface KnowledgeChunk {
   id: string
-  type: 'project' | 'skill' | 'reflection'
+  type: 'project' | 'experience' | 'skill' | 'reflection'
   text: string
   metadata: {
     topic_tags: string[]
@@ -389,7 +389,7 @@ Build an end-to-end Python pipeline that integrates three independent sources in
 
 ## ACTION
 
-Built a 6-step Python pipeline (pandas, numpy, matplotlib) at github.com/Haichennn/agi-labor-analysis. Each step is a documented function with explicit input/output contracts:
+Built a 6-step Python pipeline (pandas, numpy, matplotlib). Each step is a documented function with explicit input/output contracts:
 
 **Step 1 — Eloundou loader** (load_eloundou): reads occ_level.csv with 923 US occupations and 6 exposure scores. Extracts the 7-character SOC code from the O*NET-SOC field for downstream joining.
 
@@ -412,7 +412,7 @@ Built a 6-step Python pipeline (pandas, numpy, matplotlib) at github.com/Haichen
 
 ## RESULT
 
-A reproducible quantitative pipeline that turns three otherwise-incompatible datasets into a defensible country-level exposure metric across 38 European countries, extended into three AGI scenarios. Author-written per seminar rules, so the paper can claim every analytical decision is defensible in oral defense. Code lives at github.com/Haichennn/agi-labor-analysis (currently private per seminar confidentiality; public after July 17, 2026 paper submission).
+A reproducible quantitative pipeline that turns three otherwise-incompatible datasets into a defensible country-level exposure metric across 38 European countries, extended into three AGI scenarios. Author-written per seminar rules, so the paper can claim every analytical decision is defensible in oral defense. The code repository is currently private per seminar confidentiality rules; there is no confirmed public release date.
 
 ## WHAT I LEARNED
 
@@ -449,7 +449,7 @@ A reproducible quantitative pipeline that turns three otherwise-incompatible dat
         'AGI capability multipliers (2x/5x/10x) are illustrative thought experiments, not empirical forecasts',
         'I did not author the literature review or policy implications sections — teammates own those',
         'Eloundou exposure scores and BLS crosswalk are published external artifacts I integrated, not my work',
-        'Repo is currently private per seminar confidentiality rules; public after July 17, 2026 paper submission',
+        'Repo is currently private per seminar confidentiality rules; there is no confirmed public release date',
       ],
     },
   },
@@ -743,6 +743,196 @@ Live at insurance-dashboard-site.vercel.app. Listed as the 3rd project on CV V4 
     },
   },
 
+  // ---------- 9. IVI Defect Triage -----------------------------------------
+  {
+    id: 'project-ivi-defect-triage',
+    type: 'project',
+    text: `IVI Defect Triage: Does Symptom Normalization Improve Duplicate Detection? (September 2026)
+
+## SITUATION
+
+Defect reports of this kind can contain a lot of noise unrelated to the defect (bench names, software versions, test case IDs, colleague names). My hypothesis was that this shared noise inflates vector similarity between tickets that are not related at all, so a naive embedding search over raw report text would rank noise-similar tickets as duplicates. I wanted to test that hypothesis properly instead of assuming it, so I designed the project as a controlled ablation first and a system second.
+
+## TASK
+
+Answer one question with evidence: does reducing a noisy report to a single normalized symptom sentence before embedding it improve duplicate detection over embedding the raw text? Then extend the finding into a working triage flow (classify, retrieve, judge, create ticket) and compare a fixed pipeline against a tool-use agent on accuracy and cost. Everything public and reproducible.
+
+## ACTION
+
+Finished and public at github.com/Haichennn/symptom-normalization-retrieval.
+
+This is an independent side project, inspired by my internship experience and built in my own time on fully synthetic data, without any internal data, code or processes. It is not company work.
+
+**Retrieval study.** Each report is reduced to one German sentence describing only the symptom and the affected function. Retrieval then runs on these summaries, with raw-text retrieval as the control. Embeddings are asymmetric voyage-3 (document input type for the corpus, query input type for the incoming ticket) with cosine similarity.
+
+**Dataset.** 40 fully synthetic German tickets generated with a fixed seed across 5 components, split into 20 corpus and 20 test tickets. 8 true duplicate pairs are written with different wording, length and language mix, plus 4 hard negative pairs from the same component.
+
+**Finding 1: the obvious metric does not discriminate.** Recall@3 is 8/8 in both modes and therefore saturated at this corpus size. Reporting it as a win would be meaningless.
+
+**Finding 2: the real difference is separability.** Score overlap between duplicates and non-duplicates is 0.023 with summaries versus 0.116 on raw text, and the median top1-top2 margin doubles (0.256 versus 0.126). A margin criterion detects 7/8 duplicates with 0/12 false alarms on summaries, versus 2/8 on raw text.
+
+**Finding 3: the study is an upper bound, not expected system performance.** The numbers above use hand-written gold summaries, which overstate the effect. With automatically generated summaries the duplicate margin median drops from 0.256 to 0.178.
+
+**Finding 4: calibrating for zero false alarms is the wrong criterion in a two-stage design.** A low threshold (0.08) followed by an LLM filter reaches F1 0.86 instead of 0.55.
+
+**Pipeline versus agent.** The fixed four-step pipeline (classify, retrieve, judge, create ticket) reaches 90% component accuracy at about 0.003 USD per ticket. A Claude tool-use agent with three tools reaches 95% component accuracy and finds all 8 duplicates (F1 1.00), but costs about 18x more per ticket (0.051 USD) and its decisions are harder to reproduce.
+
+**Mistakes I made and corrected, documented in the repo.** Evaluating with symmetric instead of asymmetric similarity. Label leakage in an agent tool that exposed gold labels of neighbouring tickets. And an unsuitable calibration criterion. All three are written up in the repo rather than quietly fixed, because the corrections are the part that shows how I work.
+
+**Limitations.** I created both the data and the gold annotation, so the study measures whether retrieval reproduces the construction intent, not performance on real tickets. 8 positive pairs give wide confidence intervals. This is not a deployed system: ticket creation writes local CSV files.
+
+## RESULT
+
+A finished, public ablation study with a defensible answer: at this corpus size normalization does not change whether the duplicate is found, it changes how clearly duplicates separate from non-duplicates, which is the property a threshold or a downstream filter can actually use. The same repository contains the extension into a four-step pipeline and a tool-use agent with a measured accuracy and cost trade-off (90% component accuracy at about 0.003 USD per ticket versus 95% and F1 1.00 at about 0.051 USD per ticket). Stack: Python, Anthropic API with tool use, Voyage AI, NumPy.
+
+## WHAT I LEARNED
+
+- Pick the metric after you understand the failure mode. Recall@3 looked like the natural headline metric, and it turned out to be saturated and blind to the effect I was studying. Overlap and margin were the metrics that carried information.
+- Gold data written by the same person who designs the method is an upper bound by construction. Comparing hand-written summaries against automatically generated ones (median duplicate margin 0.256 down to 0.178) is the cheapest honesty check I know.
+- Calibration criteria are design decisions, not defaults. Zero false alarms is a reasonable target for a single-stage system and the wrong target when a second stage can still reject candidates (F1 0.86 versus 0.55).
+- Cost belongs in the evaluation table. The agent wins on component accuracy and duplicate detection and costs about 18x more per ticket, and that sentence is the actual engineering result.
+- Writing down the label leakage and the symmetric-similarity mistake made the repository more useful than hiding them would have.
+
+## WHAT I CAN CONTRIBUTE
+
+- I can design a controlled ablation around a retrieval or LLM component instead of shipping a demo and asserting that it works, including the part where the headline metric turns out to be uninformative.
+- I can build the full path from a noisy free-text input to a structured record: normalization, asymmetric embedding retrieval, an LLM judging stage, and a measured comparison between a deterministic pipeline and an agent.
+- I quantify the trade-offs a team actually has to decide on (accuracy versus cost per item, reproducibility versus autonomy) instead of presenting one option as the answer.
+- I state the caveats in the same breath as the numbers, so nobody inherits an overstated result from me.`,
+    metadata: {
+      topic_tags: [
+        'IVI Defect Triage',
+        'symptom normalization',
+        'duplicate detection',
+        'ablation study',
+        'retrieval evaluation',
+        'voyage-3 embeddings',
+        'asymmetric embeddings',
+        'cosine similarity',
+        'tool use agent',
+        'pipeline versus agent',
+        'cost per ticket',
+        'synthetic data',
+        'Python',
+        'NumPy',
+      ],
+      skills_demonstrated: [
+        'controlled ablation design with a raw-text control condition',
+        'asymmetric embedding retrieval (document versus query input types)',
+        'metric selection when the obvious metric saturates',
+        'threshold calibration for a two-stage detection design',
+        'LLM judging stage after statistical candidate generation',
+        'Anthropic API tool use agent with three tools',
+        'accuracy versus cost per item evaluation',
+        'synthetic dataset construction with a fixed seed and hard negatives',
+        'documenting and correcting evaluation mistakes in public',
+      ],
+      honesty_notes: [
+        'Recall@3 is 8/8 in both modes and therefore saturated at this corpus size; it does not discriminate and must not be quoted as evidence that normalization improves retrieval',
+        'The headline separability numbers use hand-written gold summaries and are an upper bound; with automatically generated summaries the median duplicate margin drops from 0.256 to 0.178',
+        'I created both the dataset and the gold annotation, so the study measures whether retrieval reproduces the construction intent, not performance on real tickets',
+        'Only 8 positive pairs, so all reported numbers come with wide confidence intervals',
+        'Not a deployed system: ticket creation writes local CSV files',
+        'All 40 tickets are fully synthetic',
+        'Inspired by the internship, built independently in own time; no internal data, code or processes were used; do not name the company or describe it as company work.',
+      ],
+    },
+  },
+
+  // ===========================================================================
+  // EXPERIENCE CHUNKS
+  // ===========================================================================
+
+  // ---------- BMW Group Internship ------------------------------------------
+  {
+    id: 'experience-bmw-group-internship',
+    type: 'experience',
+    text: `Intern, Quality Management Digitalization at BMW Group, Munich (since August 2026, current position)
+
+## SITUATION
+
+I am currently an intern in Quality Management Digitalization at BMW Group in Munich, starting in August 2026. The work centres on large, heterogeneous production reporting data. Before my work, that data lived in a grown, rule-less Excel solution and in SharePoint, and stakeholder meetings relied on manually compiled Excel reports.
+
+## TASK
+
+Get the production reporting data clean and move it onto an internal platform in a form that stays scalable and maintainable, then run that platform in production use as its developer and administrator.
+
+## ACTION
+
+**Data cleansing and migration.** I own the end-to-end cleansing of large, heterogeneous production reporting data: I identify erroneous and inconsistent records, trace their root causes (including faulty calculation logic in the legacy solution), correct them and migrate the clean data from SharePoint into the internal platform.
+
+**From Excel to a standardized format.** I transformed a grown, rule-less Excel solution that produced incorrect results as data volume increased into a fixed, standardized data format with defined validation rules. This makes the internal platform scalable and maintainable in the long term.
+
+**A digital workflow for stakeholder meetings.** I built a digital workflow on the platform so stakeholder meetings work from one consistent, validated data basis instead of manually compiled Excel reports, making these meetings more efficient.
+
+**Developer and administrator in production use.** I am the developer and administrator responsible for the platform in production use. I clarify requirements directly with management, order coordination and shop-floor users, translate between business and technical language, and analyze and fix issues reported by users.
+
+**Barcode scanning tool, still in development.** I am currently building a barcode scanning tool for 100% sorting inspections that replaces manual Excel capture. It consists of a database layer with PL/SQL business logic on the test environment and a frontend prototype with handheld scanner integration. It is not finished and not in production use.
+
+Tech: Oracle APEX, Oracle Database, PL/SQL, SQL, Angular, TypeScript, SharePoint.
+
+## RESULT
+
+The internship is ongoing, so this is a description of current responsibilities, not a finished outcome. The platform is in production use with clean, validated data behind it, stakeholder meetings work from one validated data basis, and the barcode scanning tool is still being built. I do not quote numbers, percentages or time savings for this work.
+
+## SCOPE AND CONFIDENTIALITY
+
+- Everything above is the full public description of this internship. I do not share internal details: no system or application names, no data, no colleague names, no production numbers, no internal formats.
+- If asked for internal details, the honest answer is that they are confidential, and the best next step is a direct conversation.
+- The barcode scanning tool is still in development: the database layer runs on the test environment and the frontend is a prototype.
+
+## WHAT I LEARNED
+
+- Cleaning data properly means tracing where the errors come from, not only correcting records. Some of the inconsistencies came from faulty calculation logic in the legacy solution itself.
+- A fixed data format with defined validation rules is what lets a platform keep working as data volume grows; a rule-less Excel solution did not.
+- Being developer and administrator for a platform in production use means the work includes clarifying requirements with management, order coordination and shop-floor users, and translating between business and technical language.
+
+## WHAT I CAN CONTRIBUTE
+
+- End-to-end data cleansing and migration: finding erroneous and inconsistent records, tracing root causes, correcting them and moving clean data to a new platform.
+- Replacing grown Excel solutions with a standardized data format and validation rules.
+- Building on Oracle APEX and Oracle Database with PL/SQL and SQL, plus Angular and TypeScript for a frontend prototype.
+- Owning a platform in production use: requirements, user support and fixes, and translation between business and technical language.`,
+    metadata: {
+      topic_tags: [
+        'BMW Group',
+        'internship',
+        'current position',
+        'work experience',
+        'Quality Management Digitalization',
+        'data cleansing',
+        'data migration',
+        'Oracle APEX',
+        'Oracle Database',
+        'PL/SQL',
+        'SQL',
+        'Angular',
+        'TypeScript',
+        'SharePoint',
+      ],
+      skills_demonstrated: [
+        'end-to-end cleansing of heterogeneous production reporting data',
+        'root cause tracing of erroneous and inconsistent records',
+        'data migration from SharePoint into an internal platform',
+        'replacing a rule-less Excel solution with a standardized data format and validation rules',
+        'building a digital workflow for stakeholder meetings',
+        'developing and administering a platform in production use',
+        'requirements clarification with management, order coordination and shop-floor users',
+        'translating between business and technical language',
+        'PL/SQL business logic and a frontend prototype with handheld scanner integration',
+      ],
+      honesty_notes: [
+        'Do not go beyond the facts in this chunk; this is the full public description of the internship',
+        'Decline to give internal details (systems, application names, data, colleagues, production numbers, formats) if asked; say they are confidential and suggest a direct conversation',
+        'The barcode scanning tool is still in development: database layer on the test environment, frontend prototype; it is not in production use',
+        'No metrics, percentages or time savings exist for this work; do not invent any',
+        'The internship is current and ongoing, started August 2026',
+        'Intern role, not a permanent position',
+        'The IVI Defect Triage project was inspired by this internship but is an independent side project on fully synthetic data; do not describe it as company work or as solving a company problem.',
+      ],
+    },
+  },
+
   // ===========================================================================
   // SKILL CHUNKS (7-10)
   // ===========================================================================
@@ -751,13 +941,13 @@ Live at insurance-dashboard-site.vercel.app. Listed as the 3rd project on CV V4 
   {
     id: 'skill-llm-integration',
     type: 'skill',
-    text: `LLM Integration in Production — Currently Building (May 2026)
+    text: `LLM Integration in Production (since May 2026)
 
 ## HONEST FRAMING
 
-I'm currently learning production LLM integration end-to-end. I am not claiming years of LLM-in-production experience — that would be dishonest for someone in my career stage. What I am claiming: I just shipped a RAG-powered Q&A system from scratch in a 4-hour intensive learning sprint, and I'm in the process of deploying it as the "Interview Me" feature on joanduan.dev. This is fresh work — shipped this week, not years-old experience.
+I'm currently learning production LLM integration end-to-end. I am not claiming years of LLM-in-production experience — that would be dishonest for someone in my career stage. What I am claiming: in May 2026 I built a RAG-powered Q&A system from scratch in a 4-hour intensive learning sprint and deployed it as the "Interview Me" feature on joanduan.dev. This is recent work, not years-old experience.
 
-## WHAT I JUST BUILT
+## WHAT I BUILT
 
 **A working RAG pipeline in Python, from zero**:
 - Set up Python environment with virtualenv, installed sentence-transformers and the Anthropic SDK
@@ -766,12 +956,13 @@ I'm currently learning production LLM integration end-to-end. I am not claiming 
 - Wired the retrieval into a Claude API call with a grounded prompt that explicitly instructs Claude to answer ONLY from retrieved context and to say "I don't have specific information about that" when the retrieved chunks don't contain the answer
 - Verified grounding works on both happy path ("Where does Joan study?" → correct answer using retrieved TUM chunk) and edge case ("What is Joan's favorite food?" → correctly says "I don't have that information" rather than hallucinating from "Joan loves coffee" chunk)
 
-**The Interview Me feature on joanduan.dev (currently being deployed)**:
-- 11-chunk knowledge base covering my projects, skills, and reflections, structured for retrieval (this very chunk is one of them)
+**The Interview Me feature on joanduan.dev (live since May 2026)**:
+- A knowledge base covering my projects, experience, skills, and reflections, structured for retrieval (this very chunk is one of them)
 - Embeddings pre-computed via Voyage AI's embedding API and committed to the repo as JSON
-- Next.js API Route (Edge runtime) for production inference: receives query → embeds via Voyage → cosine similarity vs pre-computed embeddings → top-K → grounded Claude call → streamed response back to chat UI
+- Next.js API Route (Node.js runtime) for production inference: receives query → embeds via Voyage → cosine similarity vs pre-computed embeddings → top-K → grounded Claude call → streamed response back to chat UI
 - React chat component on the Interview Me section of joanduan.dev
 - Anthropic + Voyage API keys configured in Vercel environment variables, with monthly spend cap configured to prevent runaway costs
+- Custom retrieval evaluation: a ground truth set of test queries scored with Recall@k and MRR
 
 ## CHALLENGES I'VE WORKED THROUGH
 
@@ -790,7 +981,7 @@ I'm currently learning production LLM integration end-to-end. I am not claiming 
 ## WHAT I'M STILL LEARNING
 
 - Fine-tuning vs RAG trade-offs at scale
-- Evaluation frameworks for RAG quality (retrieval recall, generation faithfulness, end-to-end answer relevance)
+- Established RAG evaluation frameworks such as RAGAS; so far I evaluate retrieval only (custom ground truth set, Recall@k, MRR), not generation faithfulness or end-to-end answer relevance
 - Multi-turn conversation state management with grounded RAG
 - Vector database trade-offs (FAISS vs Chroma vs Pinecone vs PGVector) at production scale
 
@@ -812,14 +1003,14 @@ I'm currently learning production LLM integration end-to-end. I am not claiming 
                            'grounded-prompt-engineering',
                            'hallucination-prevention',
                            'production-cost-controls',
-                           'Vercel-Edge-Function-deployment',
+                           'Vercel-Node.js-serverless-function-deployment',
                            'Anthropic-API',
                            'Voyage-AI-embeddings',
                            'Next.js-API-routes'],
       honesty_notes: ['currently learning, not years of experience',
-                     'shipped first RAG project this week',
+                     'shipped first RAG project (Interview Me) in May 2026',
                      'Interview Me is the live deployment of this skill',
-                     'fine-tuning, RAG eval frameworks, vector DBs at scale are still ahead']
+                     'has built custom retrieval evaluation (ground truth set, Recall@k, MRR) but has not used established eval frameworks such as RAGAS; fine-tuning and vector DBs at scale are still ahead']
     }
   },
 
@@ -1241,82 +1432,82 @@ I also don't mean "I'm anti-rigor." WayBack is paper-aligned; the Tableau analys
 
 ## THE SHORT VERSION
 
-A small team building an AI-native product, where engineering decisions and business decisions sit in the same room and argue productively, and where the bar is shipping things real users actually use. I want to learn from people years ahead of me, and I want to contribute non-trivially within weeks of joining.
+A role in data, AI or digitalization, where business and technology meet and where the bar is shipping things real users actually use. I want to learn from people years ahead of me, and I want to contribute non-trivially within weeks of joining. Availability: a 6-month full-time internship in Munich, starting March 2027.
 
 ## THE LONGER VERSION
 
 ### What I'm actively looking for
 
-**Team size**: 5-50 people. Small enough that I can see how engineering decisions become business outcomes. Big enough that there are people more experienced than me to learn from. Below 5 feels like solo founding; above 100 starts looking like silo-shaped roles where the bridge isn't necessary.
+**Role focus**: Data, AI and digitalization. The work I want sits where business and technology meet: turning data into decisions, putting AI into real products and processes, and digitalizing workflows that still run on manual effort. That is the bridge I have been building toward in every project.
 
-**Product focus**: AI-native or data-native. Either AI is in the core product (LLM features, RAG, agents, computer vision, recommendation systems) or data is the product (analytics platforms, BI tools, dashboards-as-product, creator tools). I'm NOT looking for "company that uses ChatGPT internally for productivity" — I want "company whose product wouldn't exist without AI / data."
+**Company types**: I'm open to three kinds of environments. Large companies driving digital transformation, where the scale of the data and the processes makes the work matter. Consulting (management and technology) with a data, AI or digital focus, where I can bring the same bridge between business and technology to different problems. And AI-focused startups, where AI is in the core product rather than a side tool.
 
-**Stage**: Early-stage to early-growth. Seed through Series B is the sweet spot. Before product-market fit there's too much chaos for a junior contributor to navigate; after Series C the role tends to specialize too narrowly. The sweet spot is "we know the product works; we're scaling and refining."
+**Energy transition**: I'm especially interested in the energy transition, in particular technical roles with a cloud and data infrastructure focus.
 
-**Engineering culture**: Ship-oriented. Bias toward demos, not decks. Code review that's substantive, not gatekeeping. Documentation that's actually maintained. Time for craft (good UX, real testing) but not time for endless bike-shedding. The team I want would describe itself as "we ship every week" not "we have careful sprints every two weeks."
+**Industrial and automotive companies**: Here I'm interested only in AI, ML, data or IT roles. I'm not looking for pure mechanical engineering or traditional manufacturing operations roles.
 
-**Business culture**: Empirical. Decisions are made with data when data exists; with documented hypotheses when data doesn't yet exist. Not HiPPO-driven ("highest-paid person's opinion"). Not metric-blind. Somewhere in the middle.
+**Engineering culture**: Ship-oriented. Bias toward demos, not decks. Code review that's substantive, not gatekeeping. Documentation that's actually maintained. Time for craft (good UX, real testing) but not for endless bike-shedding.
+
+**Business culture**: Empirical. Decisions are made with data when data exists, and with documented hypotheses when it doesn't yet. Not HiPPO-driven ("highest-paid person's opinion"). Not metric-blind. Somewhere in the middle.
 
 ### What I want to learn from a team
 
-- How experienced people make engineering trade-off decisions under real time / resource constraints
-- How product / engineering / business decisions get integrated in practice (not in theory)
-- How to operate at the level of a 30-year-old senior engineer when I'm a 21-year-old Wirtschaftsinformatik student. The pattern-matching for what "good" looks like is the highest-leverage thing I can learn right now.
+- How experienced people make engineering trade-off decisions under real time and resource constraints
+- How product, engineering and business decisions get integrated in practice, not in theory
+- How to operate at the level of a senior engineer while I'm still a Wirtschaftsinformatik student. The pattern-matching for what "good" looks like is the highest-leverage thing I can learn right now.
 
 ### What I want to contribute
 
-- Frontend ownership for AI-native product features. I can take a Figma mock or a verbal spec and ship a polished, mobile-responsive, deployed feature within a sprint.
 - Data analytics and dashboard work. I can take messy real-world data and produce business-ready visualizations with documented analytical decisions.
-- Operator-perspective input on creator-economy / audience-engagement features (if relevant to the product).
-- Tech-business translation. I can explain what a Flask backend constraint means to a product manager, or what a "we need this view to drive conversion" requirement means to an engineer, in both directions.
-- Operating in three working languages (English, German, Mandarin) if the team is internationally distributed.
+- AI and LLM features built end to end: retrieval, grounded generation, evaluation, frontend integration and deployment.
+- Frontend ownership. I can take a Figma mock or a verbal spec and ship a polished, mobile-responsive, deployed feature within a sprint.
+- Tech-business translation. I can explain what a backend constraint means to a product manager, or what a business requirement means to an engineer, in both directions.
+- Operating in four languages (English, German, Mandarin, Cantonese) if the team is internationally distributed.
 
 ### What I'm NOT looking for
 
-- **Pure agency / consulting work**: I don't want to be moved between clients every 3 months. I want to live inside one product long enough to make meaningful contributions.
-- **Pure SAP / enterprise IT consulting**: the default Wirtschaftsinformatik track. Fine work, not for me.
-- **"AI" companies that are wrapper-only on existing APIs without real product thinking**: I can spot these in 5 minutes and they're not where I'll learn.
-- **Pure research labs**: I'm not pursuing a research / PhD track. I respect the work; it's not my mode.
-- **Manufacturing / automotive / energy / heavy industry**: these are TUM Wirtschaftsinformatik defaults that I deliberately filter against. Different problem space, not mine.
+- **Pure mechanical engineering roles**: not my field and not where my skills are.
+- **Traditional manufacturing operations roles**: in industrial and automotive companies, I'm looking only at AI, ML, data or IT work.
+- **"AI" work that is wrapper-only on existing APIs without real product or process thinking**: I can spot these quickly and they're not where I'll learn.
+- **Pure research labs**: I'm not pursuing a research or PhD track. I respect the work; it's not my mode.
 
 ### Specific role categories that fit
 
-**Werkstudent / Internship roles I'd consider**:
-- Frontend engineer at an AI startup (Anthropic-style, Cambrion-style, anything in the AI-product layer)
-- Data analyst / analytics engineer at a consumer product company with real engagement data
-- Product / engineering hybrid role at an AI tooling startup
-- Applied AI engineer (junior) at a company building agents, RAG products, or LLM-integrated SaaS
-- Creator tool / creator economy startup, especially with Chinese / cross-border angle
-
-**Companies I find interesting** (not job applications, just signal of direction):
-Anthropic, OpenAI, Notion, Linear, Vercel, Cursor, Figma, Tableau / Salesforce, smaller AI-native startups in Munich (Cambrion, Helsing, etc.) and Berlin.
+**Internship roles I'd consider (6 months, full-time, Munich, from March 2027)**:
+- Data analyst or analytics engineer working with real business data
+- Applied AI or ML intern building LLM features, RAG systems or agents
+- Digitalization or digital transformation roles that connect business processes and technology
+- Consulting roles, management or technology, focused on data, AI or digital transformation
+- Cloud and data infrastructure roles in the energy transition
+- AI, ML, data or IT roles in industrial or automotive companies
 
 ## WHAT I'M COMMITTING TO IF YOU HIRE ME
 
 - I'll show up understanding that I'm the most junior person in the room and act accordingly: listen first, ask before assuming, take notes.
 - I'll contribute non-trivially within 2-4 weeks (small but real shipped work, not just shadowing).
 - I'll communicate clearly: when I'm stuck, when I'm shipping, when I'm uncertain.
-- I'll respect domain boundaries: I won't try to own backend / DevOps / ML research areas where I'm not yet competent.
+- I'll respect domain boundaries: I won't try to own areas where I'm not yet competent.
 - I'll show up to feedback as someone trying to compress a 10-year skill curve, not as someone defending what I already know.
 
 ## WHAT I'M ASKING FOR FROM THE TEAM
 
-- Real work, not coffee-fetching. Werkstudent rates exist for a reason; I'd rather earn them.
+- Real work, not coffee-fetching. I'd rather earn my place through shipped work.
 - A peer or mentor I can ask "is this approach reasonable?" without it being a big production.
-- Visibility into how decisions are actually made (engineering, product, business) — even if my role is small.
-- Honest feedback. I'd rather hear "this isn't working" early than at the end of my contract.
+- Visibility into how decisions are actually made (engineering, product, business), even if my role is small.
+- Honest feedback. I'd rather hear "this isn't working" early than at the end of my internship.
 
-That's the team I'm building toward. If you're reading this and that sounds like your team — let's talk.`,
+That's the team I'm building toward. If that sounds like your team, let's talk.`,
     metadata: {
-      topic_tags: ['team-fit', 'job-search', 'AI-startup', 'Werkstudent',
-                   'internship', 'role-fit', 'company-stage', 'reflection',
-                   'career-direction'],
+      topic_tags: ['team-fit', 'job-search', 'AI-startup', 'internship',
+                   'role-fit', 'energy-transition', 'digitalization',
+                   'availability', 'reflection', 'career-direction'],
       skills_demonstrated: [],
       honesty_notes: ['this is a fit / preference chunk, not a skill claim',
-                     'explicitly NOT seeking SAP / IT consulting / manufacturing',
-                     'explicitly seeking AI-native / data-native products',
-                     'small-team preference (5-50 people)',
-                     'early-stage preference (seed through Series B)']
+                     'seeking roles in data, AI and digitalization, where business and technology meet',
+                     'open to large companies driving digital transformation, consulting (management and technology), and AI-focused startups',
+                     'in industrial or automotive companies, interested only in AI, ML, data or IT roles; not seeking pure mechanical engineering or traditional manufacturing operations roles',
+                     'availability: 6-month full-time internships in Munich from March 2027',
+                     'do not name specific companies as targets']
     }
   },
 
@@ -1361,6 +1552,7 @@ GROUNDING RULES (non-negotiable):
 3. Do NOT use general knowledge about TUM, Wirtschaftsinformatik, AI, or any topic. Only use what's in the context.
 4. Do NOT make up facts, dates, numbers, project names, or claims.
 5. Stay in Joan's tone: direct, specific, honest about scope, no over-claiming.
+6. If a context chunk is followed by "Notes for answering about this chunk:", follow those notes when answering about that chunk.
 
 WHEN YOU CAN'T ANSWER:
 If the retrieved context does not contain enough information to answer the question, you MUST:

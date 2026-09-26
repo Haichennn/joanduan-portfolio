@@ -1,0 +1,1031 @@
+{
+  "config_version": "v2-17-chunks-gt2-ivi-link",
+  "ground_truth_version": "v2-2026-09-26",
+  "timestamp": "2026-09-26T16:19:11.872Z",
+  "kb_chunk_count": 17,
+  "query_count": 21,
+  "aggregate": {
+    "recall_at_1": 0.5515873015873016,
+    "recall_at_3": 0.8611111111111113,
+    "recall_at_5": 0.8730158730158731,
+    "mrr": 0.8730158730158729,
+    "hit_at_1": 0.8095238095238095,
+    "hit_at_3": 0.9523809523809523,
+    "hit_at_5": 0.9523809523809523
+  },
+  "aggregate_excluding_expected_to_fail": {
+    "recall_at_1": 0.5515873015873016,
+    "recall_at_3": 0.8611111111111113,
+    "recall_at_5": 0.8730158730158731,
+    "mrr": 0.8730158730158729,
+    "hit_at_1": 0.8095238095238095,
+    "hit_at_3": 0.9523809523809523,
+    "hit_at_5": 0.9523809523809523
+  },
+  "aggregate_by_persona_hit": {
+    "hr": {
+      "n": 9,
+      "hit_at_1": 0.7777777777777778,
+      "hit_at_3": 1,
+      "hit_at_5": 1
+    },
+    "technical": {
+      "n": 7,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "hit_at_5": 1
+    },
+    "recruiter": {
+      "n": 5,
+      "hit_at_1": 0.6,
+      "hit_at_3": 0.8,
+      "hit_at_5": 0.8
+    }
+  },
+  "per_query": [
+    {
+      "id": "Q1",
+      "persona": "hr",
+      "query": "Tell me about your WayBack project",
+      "relevant_chunks": [
+        "project-wayback"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "reflection-why-i-build",
+          "score": 0.3729123495509992,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-tech-business-bridge",
+          "score": 0.3507240031174094,
+          "is_relevant": false
+        },
+        {
+          "id": "project-wayback",
+          "score": 0.3277996916381802,
+          "is_relevant": true
+        },
+        {
+          "id": "skill-llm-integration",
+          "score": 0.3047966834233639,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-wirtschaftsinformatik",
+          "score": 0.2808784498763365,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 0,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 0.3333333333333333
+    },
+    {
+      "id": "Q2",
+      "persona": "hr",
+      "query": "Have you built any tools with LLMs?",
+      "relevant_chunks": [
+        "project-audit-translator",
+        "project-repolens",
+        "skill-llm-integration"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "skill-llm-integration",
+          "score": 0.46285303976463127,
+          "is_relevant": true
+        },
+        {
+          "id": "project-audit-translator",
+          "score": 0.3959078733608504,
+          "is_relevant": true
+        },
+        {
+          "id": "project-repolens",
+          "score": 0.35898649221562945,
+          "is_relevant": true
+        },
+        {
+          "id": "project-ivi-defect-triage",
+          "score": 0.31605341341551624,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-i-build",
+          "score": 0.29356853544593936,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0.3333333333333333,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q3",
+      "persona": "hr",
+      "query": "Have you worked with insurance data?",
+      "relevant_chunks": [
+        "project-pc-insurance-dashboard"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "project-pc-insurance-dashboard",
+          "score": 0.483135026454679,
+          "is_relevant": true
+        },
+        {
+          "id": "project-agi-pipeline",
+          "score": 0.2998258311683691,
+          "is_relevant": false
+        },
+        {
+          "id": "experience-bmw-group-internship",
+          "score": 0.29099160794071227,
+          "is_relevant": false
+        },
+        {
+          "id": "project-tableau-tata",
+          "score": 0.27882701947732524,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-team-fit",
+          "score": 0.26434695060702074,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q4",
+      "persona": "hr",
+      "query": "Tell me about your LLM application experience",
+      "relevant_chunks": [
+        "skill-llm-integration",
+        "project-repolens",
+        "project-audit-translator"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "skill-llm-integration",
+          "score": 0.48845179812786993,
+          "is_relevant": true
+        },
+        {
+          "id": "project-audit-translator",
+          "score": 0.41300315993456493,
+          "is_relevant": true
+        },
+        {
+          "id": "project-repolens",
+          "score": 0.3244111730133713,
+          "is_relevant": true
+        },
+        {
+          "id": "project-ivi-defect-triage",
+          "score": 0.2936304177848212,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-team-fit",
+          "score": 0.2642974596225119,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0.3333333333333333,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q5",
+      "persona": "hr",
+      "query": "What's your experience with frontend development?",
+      "relevant_chunks": [
+        "skill-frontend-mobile-ux",
+        "project-wayback",
+        "project-joanduan-dev"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "skill-frontend-mobile-ux",
+          "score": 0.4400320140576147,
+          "is_relevant": true
+        },
+        {
+          "id": "project-wayback",
+          "score": 0.37850408988819306,
+          "is_relevant": true
+        },
+        {
+          "id": "reflection-why-i-build",
+          "score": 0.3463286722722689,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-tech-business-bridge",
+          "score": 0.3238951592553435,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-team-fit",
+          "score": 0.3066806879138191,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0.3333333333333333,
+        "3": 0.6666666666666666,
+        "5": 0.6666666666666666
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q6",
+      "persona": "hr",
+      "query": "Why did you choose Wirtschaftsinformatik?",
+      "relevant_chunks": [
+        "reflection-why-wirtschaftsinformatik"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "reflection-why-wirtschaftsinformatik",
+          "score": 0.6785735172477495,
+          "is_relevant": true
+        },
+        {
+          "id": "skill-tech-business-bridge",
+          "score": 0.5165301245649632,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-team-fit",
+          "score": 0.3668050198871906,
+          "is_relevant": false
+        },
+        {
+          "id": "project-pc-insurance-dashboard",
+          "score": 0.32579693201346516,
+          "is_relevant": false
+        },
+        {
+          "id": "experience-bmw-group-internship",
+          "score": 0.27992624048451864,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q7",
+      "persona": "hr",
+      "query": "How do you think about combining business and technology?",
+      "relevant_chunks": [
+        "skill-tech-business-bridge",
+        "reflection-why-wirtschaftsinformatik",
+        "project-audit-translator"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "skill-tech-business-bridge",
+          "score": 0.5193106692943928,
+          "is_relevant": true
+        },
+        {
+          "id": "reflection-why-wirtschaftsinformatik",
+          "score": 0.4962706418559585,
+          "is_relevant": true
+        },
+        {
+          "id": "reflection-team-fit",
+          "score": 0.3159031856550094,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-i-build",
+          "score": 0.28496521923700957,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-creator-economy-ops",
+          "score": 0.2567940729302419,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0.3333333333333333,
+        "3": 0.6666666666666666,
+        "5": 0.6666666666666666
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q8",
+      "persona": "hr",
+      "query": "What kind of team are you looking for?",
+      "relevant_chunks": [
+        "reflection-team-fit"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "reflection-team-fit",
+          "score": 0.42205827792164063,
+          "is_relevant": true
+        },
+        {
+          "id": "reflection-why-wirtschaftsinformatik",
+          "score": 0.33921298747896317,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-tech-business-bridge",
+          "score": 0.2938249166830504,
+          "is_relevant": false
+        },
+        {
+          "id": "project-audit-translator",
+          "score": 0.27954734059111813,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-i-build",
+          "score": 0.2738708076518977,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q9",
+      "persona": "technical",
+      "query": "How did you handle malformed JSON responses from the LLM?",
+      "relevant_chunks": [
+        "project-audit-translator",
+        "skill-llm-integration"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "skill-llm-integration",
+          "score": 0.38162751755572805,
+          "is_relevant": true
+        },
+        {
+          "id": "project-audit-translator",
+          "score": 0.3813526436781006,
+          "is_relevant": true
+        },
+        {
+          "id": "project-repolens",
+          "score": 0.24848952627020976,
+          "is_relevant": false
+        },
+        {
+          "id": "project-ivi-defect-triage",
+          "score": 0.22724236788973512,
+          "is_relevant": false
+        },
+        {
+          "id": "project-agi-pipeline",
+          "score": 0.1601301116388805,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0.5,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q10",
+      "persona": "technical",
+      "query": "What architectural decisions did you make when working with your teammate on WayBack?",
+      "relevant_chunks": [
+        "project-wayback"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "project-wayback",
+          "score": 0.4646563447510504,
+          "is_relevant": true
+        },
+        {
+          "id": "skill-tech-business-bridge",
+          "score": 0.4209902185386288,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-frontend-mobile-ux",
+          "score": 0.37822729631635643,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-i-build",
+          "score": 0.3614480287531708,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-wirtschaftsinformatik",
+          "score": 0.3416576880975238,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q11",
+      "persona": "technical",
+      "query": "How do you decide when to use a Claude Artifact versus a full deployment?",
+      "relevant_chunks": [
+        "project-audit-translator",
+        "skill-llm-integration"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "project-audit-translator",
+          "score": 0.36691711275178046,
+          "is_relevant": true
+        },
+        {
+          "id": "project-repolens",
+          "score": 0.34931044947242,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-llm-integration",
+          "score": 0.3376802486796927,
+          "is_relevant": true
+        },
+        {
+          "id": "project-ivi-defect-triage",
+          "score": 0.3234214849848749,
+          "is_relevant": false
+        },
+        {
+          "id": "project-joanduan-dev",
+          "score": 0.29442676278261326,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0.5,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q12",
+      "persona": "technical",
+      "query": "Walk me through your agent orchestration in Repolens",
+      "relevant_chunks": [
+        "project-repolens"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "project-repolens",
+          "score": 0.4545919456854574,
+          "is_relevant": true
+        },
+        {
+          "id": "skill-llm-integration",
+          "score": 0.22863265384514142,
+          "is_relevant": false
+        },
+        {
+          "id": "project-ivi-defect-triage",
+          "score": 0.22202733360586743,
+          "is_relevant": false
+        },
+        {
+          "id": "project-audit-translator",
+          "score": 0.20898929449202322,
+          "is_relevant": false
+        },
+        {
+          "id": "project-agi-pipeline",
+          "score": 0.20775714446418342,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q13",
+      "persona": "technical",
+      "query": "How do you approach evaluating retrieval quality in a RAG system?",
+      "relevant_chunks": [
+        "skill-llm-integration",
+        "project-ivi-defect-triage"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "skill-llm-integration",
+          "score": 0.477195980749081,
+          "is_relevant": true
+        },
+        {
+          "id": "project-ivi-defect-triage",
+          "score": 0.4572918317065662,
+          "is_relevant": true
+        },
+        {
+          "id": "project-repolens",
+          "score": 0.2814181623669244,
+          "is_relevant": false
+        },
+        {
+          "id": "project-wayback",
+          "score": 0.27890430325884236,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-i-build",
+          "score": 0.2641172964231018,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0.5,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q14",
+      "persona": "recruiter",
+      "query": "What's the top thing you've built recently?",
+      "relevant_chunks": [
+        "project-repolens",
+        "project-joanduan-dev",
+        "project-audit-translator",
+        "project-ivi-defect-triage"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "reflection-why-i-build",
+          "score": 0.49879059110780466,
+          "is_relevant": false
+        },
+        {
+          "id": "project-joanduan-dev",
+          "score": 0.3944649541926261,
+          "is_relevant": true
+        },
+        {
+          "id": "project-repolens",
+          "score": 0.36653538605915975,
+          "is_relevant": true
+        },
+        {
+          "id": "project-wayback",
+          "score": 0.3590733463432297,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-llm-integration",
+          "score": 0.35779141959224225,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "hit_at": {
+        "1": 0,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 0.5
+    },
+    {
+      "id": "Q15",
+      "persona": "recruiter",
+      "query": "Why should we hire you for an AI internship?",
+      "relevant_chunks": [
+        "skill-llm-integration",
+        "skill-tech-business-bridge",
+        "reflection-why-i-build",
+        "reflection-team-fit"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "reflection-team-fit",
+          "score": 0.5097171456190995,
+          "is_relevant": true
+        },
+        {
+          "id": "reflection-why-wirtschaftsinformatik",
+          "score": 0.39963348414749666,
+          "is_relevant": false
+        },
+        {
+          "id": "project-repolens",
+          "score": 0.3365220949833625,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-i-build",
+          "score": 0.33470882286326775,
+          "is_relevant": true
+        },
+        {
+          "id": "experience-bmw-group-internship",
+          "score": 0.3190106150249596,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0.25,
+        "3": 0.25,
+        "5": 0.5
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q16",
+      "persona": "recruiter",
+      "query": "Do you have any business or domain knowledge in insurance?",
+      "relevant_chunks": [
+        "project-pc-insurance-dashboard",
+        "skill-tech-business-bridge"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "project-pc-insurance-dashboard",
+          "score": 0.41255849007048817,
+          "is_relevant": true
+        },
+        {
+          "id": "skill-tech-business-bridge",
+          "score": 0.2571069190318036,
+          "is_relevant": true
+        },
+        {
+          "id": "reflection-team-fit",
+          "score": 0.2336101244609282,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-wirtschaftsinformatik",
+          "score": 0.2085234171743899,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-llm-integration",
+          "score": 0.20629024133069748,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0.5,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q17",
+      "persona": "recruiter",
+      "query": "Tell me about a project where you had to navigate teamwork challenges",
+      "relevant_chunks": [
+        "project-wayback"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "project-wayback",
+          "score": 0.3565946133638556,
+          "is_relevant": true
+        },
+        {
+          "id": "skill-llm-integration",
+          "score": 0.3283291002800051,
+          "is_relevant": false
+        },
+        {
+          "id": "project-repolens",
+          "score": 0.3060886517752691,
+          "is_relevant": false
+        },
+        {
+          "id": "experience-bmw-group-internship",
+          "score": 0.30331834115943934,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-i-build",
+          "score": 0.294902419847593,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q18",
+      "persona": "technical",
+      "query": "Have you ever run a controlled experiment on an embedding retrieval pipeline?",
+      "relevant_chunks": [
+        "project-ivi-defect-triage"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "project-ivi-defect-triage",
+          "score": 0.5837783649513735,
+          "is_relevant": true
+        },
+        {
+          "id": "skill-llm-integration",
+          "score": 0.5155677166049489,
+          "is_relevant": false
+        },
+        {
+          "id": "project-repolens",
+          "score": 0.3337949010573812,
+          "is_relevant": false
+        },
+        {
+          "id": "project-agi-pipeline",
+          "score": 0.3020932879463046,
+          "is_relevant": false
+        },
+        {
+          "id": "project-audit-translator",
+          "score": 0.2974744416503713,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q19",
+      "persona": "hr",
+      "query": "What are you working on in your current internship?",
+      "relevant_chunks": [
+        "experience-bmw-group-internship"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "reflection-team-fit",
+          "score": 0.43574696925743517,
+          "is_relevant": false
+        },
+        {
+          "id": "experience-bmw-group-internship",
+          "score": 0.4097807214476218,
+          "is_relevant": true
+        },
+        {
+          "id": "reflection-why-i-build",
+          "score": 0.3497776579272807,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-llm-integration",
+          "score": 0.3069369719695787,
+          "is_relevant": false
+        },
+        {
+          "id": "project-repolens",
+          "score": 0.30235367316301437,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 0,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 0.5
+    },
+    {
+      "id": "Q20",
+      "persona": "technical",
+      "query": "Have you worked with Oracle databases or PL/SQL?",
+      "relevant_chunks": [
+        "experience-bmw-group-internship"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "experience-bmw-group-internship",
+          "score": 0.3801049573016756,
+          "is_relevant": true
+        },
+        {
+          "id": "skill-llm-integration",
+          "score": 0.3298924638795675,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-tech-business-bridge",
+          "score": 0.28801663513897274,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-wirtschaftsinformatik",
+          "score": 0.26601606453797155,
+          "is_relevant": false
+        },
+        {
+          "id": "project-pc-insurance-dashboard",
+          "score": 0.2652694440472398,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "hit_at": {
+        "1": 1,
+        "3": 1,
+        "5": 1
+      },
+      "reciprocal_rank": 1
+    },
+    {
+      "id": "Q21",
+      "persona": "recruiter",
+      "query": "What industry experience do you have?",
+      "relevant_chunks": [
+        "experience-bmw-group-internship"
+      ],
+      "retrieved_chunks": [
+        {
+          "id": "reflection-team-fit",
+          "score": 0.328132579628253,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-creator-economy-ops",
+          "score": 0.3017051523342777,
+          "is_relevant": false
+        },
+        {
+          "id": "skill-tech-business-bridge",
+          "score": 0.2960206459941026,
+          "is_relevant": false
+        },
+        {
+          "id": "reflection-why-wirtschaftsinformatik",
+          "score": 0.2848808521232746,
+          "is_relevant": false
+        },
+        {
+          "id": "project-pc-insurance-dashboard",
+          "score": 0.2775469987015935,
+          "is_relevant": false
+        }
+      ],
+      "recall_at": {
+        "1": 0,
+        "3": 0,
+        "5": 0
+      },
+      "hit_at": {
+        "1": 0,
+        "3": 0,
+        "5": 0
+      },
+      "reciprocal_rank": 0
+    }
+  ]
+}
