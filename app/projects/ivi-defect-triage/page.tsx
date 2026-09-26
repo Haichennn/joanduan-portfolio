@@ -165,7 +165,7 @@ export default function IviDefectTriagePage() {
             columns={["Mode", "Recall@3", "Overlap", "Median margin"]}
             rows={[
               ["summary", "8/8", "0.023", "0.256"],
-              ["raw report", "8/8", "0.116", "0.126"],
+              ["raw report", "8/8", "0.112", "0.126"],
             ]}
           />
 
@@ -180,7 +180,7 @@ export default function IviDefectTriagePage() {
             <div className="border-l border-[var(--ink)]/15 pl-6">
               <p className={label}>Finding 02 · Separability is the real difference</p>
               <p className="font-sans text-base md:text-lg text-[var(--ink)]/75 leading-relaxed">
-                In neither mode does an absolute score threshold separate duplicates from non-duplicates. But the overlap between the two score ranges is five times smaller with summaries.
+                In neither mode does an absolute score threshold separate duplicates from non-duplicates. But the overlap between the two score ranges is about five times smaller with summaries.
               </p>
             </div>
           </div>
@@ -285,7 +285,7 @@ export default function IviDefectTriagePage() {
             The agent has three tools: <code className={code}>search_similar_tickets</code>, <code className={code}>get_ticket_details</code> and <code className={code}>create_ticket</code>, with a maximum of 8 calls per ticket and a median of 4. When it is unsure, it reformulates the search or looks up the full text, which lets it find the two pairs every threshold misses.
           </p>
           <p className={paragraph}>
-            The price is about 18x the cost per ticket and decisions that are less reproducible.
+            The price is more than 10x the cost per ticket (0.051 USD vs. under 0.005 USD for the pipeline) and decisions that are less reproducible.
           </p>
         </section>
 

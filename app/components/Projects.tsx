@@ -403,9 +403,9 @@ export function VisualScoreSeparation() {
       label: "RAW TEXT",
       y: 150,
       nonDup: { x: 160, w: 250 },
-      dup: { x: 365, w: 275 },
-      overlap: { x: 365, w: 45 },
-      value: "0.116",
+      dup: { x: 366, w: 274 },
+      overlap: { x: 366, w: 44 },
+      value: "0.112",
       strong: false,
     },
     {

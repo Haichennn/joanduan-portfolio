@@ -11,6 +11,8 @@
 **Compared against**: `scripts/eval/results/eval-v1-baseline-2026-05-24T20-45-54-940Z.json` (15 chunks)  
 **This run**: `scripts/eval/results/eval-v2-17-chunks-2026-09-26T15-43-49-028Z.json`
 
+All results in this doc refer to the knowledge base as embedded on 2026-09-26; the IVI chunk text was later corrected (overlap 0.112 instead of 0.116, cost wording) and not re-evaluated.
+
 ---
 
 ## TL;DR

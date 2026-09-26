@@ -769,13 +769,13 @@ This is an independent side project, inspired by my internship experience and bu
 
 **Finding 1: the obvious metric does not discriminate.** Recall@3 is 8/8 in both modes and therefore saturated at this corpus size. Reporting it as a win would be meaningless.
 
-**Finding 2: the real difference is separability.** Score overlap between duplicates and non-duplicates is 0.023 with summaries versus 0.116 on raw text, and the median top1-top2 margin doubles (0.256 versus 0.126). A margin criterion detects 7/8 duplicates with 0/12 false alarms on summaries, versus 2/8 on raw text.
+**Finding 2: the real difference is separability.** Score overlap between duplicates and non-duplicates is 0.023 with summaries versus 0.112 on raw text, and the median top1-top2 margin doubles (0.256 versus 0.126). A margin criterion detects 7/8 duplicates with 0/12 false alarms on summaries, versus 2/8 on raw text.
 
 **Finding 3: the study is an upper bound, not expected system performance.** The numbers above use hand-written gold summaries, which overstate the effect. With automatically generated summaries the duplicate margin median drops from 0.256 to 0.178.
 
 **Finding 4: calibrating for zero false alarms is the wrong criterion in a two-stage design.** A low threshold (0.08) followed by an LLM filter reaches F1 0.86 instead of 0.55.
 
-**Pipeline versus agent.** The fixed four-step pipeline (classify, retrieve, judge, create ticket) reaches 90% component accuracy at about 0.003 USD per ticket. A Claude tool-use agent with three tools reaches 95% component accuracy and finds all 8 duplicates (F1 1.00), but costs about 18x more per ticket (0.051 USD) and its decisions are harder to reproduce.
+**Pipeline versus agent.** The fixed four-step pipeline (classify, retrieve, judge, create ticket) reaches 90% component accuracy at about 0.003 USD per ticket. A Claude tool-use agent with three tools reaches 95% component accuracy and finds all 8 duplicates (F1 1.00), but at more than 10x the cost per ticket (0.051 USD vs. under 0.005 USD for the pipeline), and its decisions are harder to reproduce.
 
 **Mistakes I made and corrected, documented in the repo.** Evaluating with symmetric instead of asymmetric similarity. Label leakage in an agent tool that exposed gold labels of neighbouring tickets. And an unsuitable calibration criterion. All three are written up in the repo rather than quietly fixed, because the corrections are the part that shows how I work.
 
@@ -790,7 +790,7 @@ A finished, public ablation study with a defensible answer: at this corpus size 
 - Pick the metric after you understand the failure mode. Recall@3 looked like the natural headline metric, and it turned out to be saturated and blind to the effect I was studying. Overlap and margin were the metrics that carried information.
 - Gold data written by the same person who designs the method is an upper bound by construction. Comparing hand-written summaries against automatically generated ones (median duplicate margin 0.256 down to 0.178) is the cheapest honesty check I know.
 - Calibration criteria are design decisions, not defaults. Zero false alarms is a reasonable target for a single-stage system and the wrong target when a second stage can still reject candidates (F1 0.86 versus 0.55).
-- Cost belongs in the evaluation table. The agent wins on component accuracy and duplicate detection and costs about 18x more per ticket, and that sentence is the actual engineering result.
+- Cost belongs in the evaluation table. The agent wins on component accuracy and duplicate detection at more than 10x the cost per ticket (0.051 USD vs. under 0.005 USD for the pipeline), and that sentence is the actual engineering result.
 - Writing down the label leakage and the symmetric-similarity mistake made the repository more useful than hiding them would have.
 
 ## WHAT I CAN CONTRIBUTE
@@ -925,7 +925,7 @@ The internship is ongoing, so this is a description of current responsibilities,
         'Do not go beyond the facts in this chunk; this is the full public description of the internship',
         'Decline to give internal details (systems, application names, data, colleagues, production numbers, formats) if asked; say they are confidential and suggest a direct conversation',
         'The barcode scanning tool is still in development: database layer on the test environment, frontend prototype; it is not in production use',
-        'No metrics, percentages or time savings exist for this work; do not invent any',
+        'Quantitative details of this work are not published on this site; if asked for numbers, say they are not public here and suggest a direct conversation; never invent any.',
         'The internship is current and ongoing, started August 2026',
         'Intern role, not a permanent position',
         'The IVI Defect Triage project was inspired by this internship but is an independent side project on fully synthetic data; do not describe it as company work or as solving a company problem.',
