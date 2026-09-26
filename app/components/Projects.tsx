@@ -396,6 +396,116 @@ function VisualRepoAudit() {
   );
 }
 
+export function VisualScoreSeparation() {
+  const bandH = 26;
+  const rows = [
+    {
+      label: "RAW TEXT",
+      y: 150,
+      nonDup: { x: 160, w: 250 },
+      dup: { x: 365, w: 275 },
+      overlap: { x: 365, w: 45 },
+      value: "0.116",
+      strong: false,
+    },
+    {
+      label: "SUMMARY",
+      y: 300,
+      nonDup: { x: 160, w: 230 },
+      dup: { x: 381, w: 259 },
+      overlap: { x: 381, w: 9 },
+      value: "0.023",
+      strong: true,
+    },
+  ];
+
+  return (
+    <svg viewBox="0 0 800 450" className="w-full h-full" fill="none">
+      <text x="60" y="48" className="font-mono" fontSize="11" fill="var(--ink)" fillOpacity="0.5" letterSpacing="2">
+        SCORE OVERLAP // DUPLICATES VS NON-DUPLICATES
+      </text>
+      <line x1="60" y1="68" x2="740" y2="68" stroke="var(--ink)" strokeOpacity="0.15" strokeWidth="1" />
+
+      <text x="285" y="98" textAnchor="middle" className="font-mono" fontSize="10" fill="var(--ink)" fillOpacity="0.45" letterSpacing="1">
+        NON-DUPLICATES
+      </text>
+      <text x="515" y="98" textAnchor="middle" className="font-mono" fontSize="10" fill="var(--ink)" fillOpacity="0.45" letterSpacing="1">
+        DUPLICATES
+      </text>
+
+      {rows.map((r) => (
+        <g key={r.label}>
+          <text x="60" y={r.y + 5} className="font-mono" fontSize="12" fill="var(--ink)" fillOpacity="0.7" letterSpacing="1">
+            {r.label}
+          </text>
+
+          <line
+            x1="160"
+            y1={r.y + 42}
+            x2="700"
+            y2={r.y + 42}
+            stroke="var(--ink)"
+            strokeOpacity="0.15"
+            strokeWidth="1"
+          />
+
+          <rect
+            x={r.nonDup.x}
+            y={r.y - bandH / 2}
+            width={r.nonDup.w}
+            height={bandH}
+            stroke="var(--ink)"
+            strokeOpacity="0.45"
+            strokeWidth="1.5"
+          />
+          <rect
+            x={r.dup.x}
+            y={r.y - bandH / 2}
+            width={r.dup.w}
+            height={bandH}
+            stroke="var(--ink)"
+            strokeOpacity="0.45"
+            strokeWidth="1.5"
+          />
+          <rect
+            x={r.overlap.x}
+            y={r.y - bandH / 2}
+            width={r.overlap.w}
+            height={bandH}
+            fill="var(--accent)"
+            fillOpacity={r.strong ? 0.9 : 0.35}
+          />
+
+          <text
+            x={r.overlap.x + r.overlap.w / 2}
+            y={r.y + 62}
+            textAnchor="middle"
+            className="font-mono"
+            fontSize="12"
+            fill={r.strong ? "var(--accent)" : "var(--ink)"}
+            fillOpacity={r.strong ? undefined : 0.6}
+          >
+            {r.value}
+          </text>
+          <line
+            x1={r.overlap.x + r.overlap.w / 2}
+            y1={r.y + bandH / 2 + 4}
+            x2={r.overlap.x + r.overlap.w / 2}
+            y2={r.y + 48}
+            stroke="var(--ink)"
+            strokeOpacity="0.3"
+            strokeWidth="1"
+          />
+        </g>
+      ))}
+
+      <text x="780" y="430" textAnchor="end" className="font-mono" fontSize="10" fill="var(--ink)" fillOpacity="0.4" letterSpacing="1">
+        MEDIAN TOP1-TOP2 MARGIN 0.126 → 0.256
+      </text>
+    </svg>
+  );
+}
+
 const creatorEconomyDisclaimer = (
   <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-[var(--mute)]/60 italic mt-3 leading-relaxed">
     Independent project · public Bilibili / Douyin API data · inspired by but
@@ -446,6 +556,22 @@ const projects = [
     codeUrl: "https://github.com/Haichennn/repolens",
     secondaryUrl: "/projects/repolens",
     visual: <VisualRepoAudit />,
+  },
+  {
+    id: "ivi-defect-triage",
+    slug: "ivi-defect-triage",
+    anchor: "project-ivi-defect-triage",
+    category: "AI / RESEARCH",
+    title:
+      "IVI Defect Triage: Does Symptom Normalization Improve Duplicate Detection?",
+    description:
+      "A controlled ablation study on whether normalizing noisy defect reports into one-sentence symptom summaries improves embedding-based duplicate detection, extended into a full triage pipeline and a tool-use agent.",
+    tags: ["Python", "Anthropic API (tool use)", "Voyage AI", "NumPy"],
+    status: "live" as const,
+    year: "2026.09",
+    liveUrl: "/projects/ivi-defect-triage",
+    codeUrl: "https://github.com/Haichennn/symptom-normalization-retrieval",
+    visual: <VisualScoreSeparation />,
   },
   {
     id: "wayback",
@@ -542,7 +668,7 @@ export default function Projects() {
             What I&apos;m working on.
           </h2>
           <p className="font-sans text-base text-[var(--mute)] leading-relaxed max-w-xl">
-            Eight projects. Three live, one in progress, four on the roadmap.
+            Nine projects. Four live, one in progress, four on the roadmap.
           </p>
         </header>
 
