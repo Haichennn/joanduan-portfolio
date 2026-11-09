@@ -366,7 +366,7 @@ export default function IviDefectTriagePage() {
             </p>
           </div>
           <p className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--mute)] mt-10">
-            Haichen Duan
+            Joan Duan
           </p>
         </section>
 

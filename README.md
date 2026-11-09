@@ -1,6 +1,6 @@
 # joanduan.dev
 
-Personal portfolio for **Haichen Duan** — Wirtschaftsinformatik @ TUM Munich.
+Personal portfolio for **Joan Duan** — Wirtschaftsinformatik @ TUM Munich.
 
 **Live**: [joanduan.dev](https://joanduan.dev)  
 **Connect**: [LinkedIn](https://www.linkedin.com/in/haichen-duan-6689192a7/) · [GitHub](https://github.com/Haichennn) · haic.duan@gmail.com
@@ -41,7 +41,7 @@ Editorial woman who writes code. Built on four tokens:
 
 ## Sections
 
-- **Hero** — particle-rendered HAICHEN (~12000 pts, tri-tone palette) with hover-triggered Clair de Lune fragment
+- **Hero** — particle-rendered JOAN (~12000 pts, tri-tone palette) with hover-triggered Clair de Lune fragment
 - **About** — The Bridge: sustainable products that serve both the business and the people who use it
 - **Experience** — internships, university, audience-listening practice on Bilibili (67k followers)
 - **Projects** — WayBack (live), TATA Dashboard, Industrial Sales Forecasting, Creator Economy Analytics

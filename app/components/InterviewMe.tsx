@@ -172,7 +172,7 @@ export default function InterviewMe() {
                   <div key={i} className="flex justify-start">
                     <div className="max-w-[90%]">
                       <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent-small)] mb-2">
-                        — HAICHEN —
+                        — JOAN —
                       </p>
                       {showWaiting ? (
                         <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--mute)]">
@@ -225,7 +225,7 @@ export default function InterviewMe() {
             className="flex items-end gap-2 border border-[var(--mute)]/30 focus-within:border-[var(--accent)] transition-colors p-2 bg-[var(--base)]"
           >
             <label htmlFor="interview-input" className="sr-only">
-              Ask Haichen a question
+              Ask Joan a question
             </label>
             <textarea
               id="interview-input"

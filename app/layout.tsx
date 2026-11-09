@@ -17,9 +17,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const title = "Haichen Duan — Builder. Creator. AI-Native.";
+const title = "Joan Duan — Builder. Creator. AI-Native.";
 const description =
-  "Personal portfolio of Haichen Duan — Wirtschaftsinformatik @ TUM, building thoughtful things with AI.";
+  "Personal portfolio of Joan Duan — Wirtschaftsinformatik @ TUM, building thoughtful things with AI.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://joanduan.dev"),
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     title,
     description,
     url: "https://joanduan.dev",
-    siteName: "Haichen Duan",
+    siteName: "Joan Duan",
     locale: "en_US",
     type: "website",
   },

@@ -87,12 +87,12 @@ export default function ParticleHaichen() {
       offCtx.textBaseline = "middle";
 
       const safeWidth = rect.width * 0.92;
-      const measured = offCtx.measureText("HAICHEN");
+      const measured = offCtx.measureText("JOAN");
       const scale = measured.width > safeWidth ? safeWidth / measured.width : 1;
       const effectiveFontSize = fontSize * scale;
       offCtx.font = `400 ${effectiveFontSize}px "Fraunces", "Times New Roman", serif`;
 
-      offCtx.fillText("HAICHEN", rect.width / 2, rect.height / 2);
+      offCtx.fillText("JOAN", rect.width / 2, rect.height / 2);
 
       const imageData = offCtx.getImageData(
         0,
@@ -298,7 +298,7 @@ export default function ParticleHaichen() {
           immediately below; the h1 is the accessible representation that
           exists in DOM regardless of JS state. View-source must contain
           this element. Per PRODUCT.md §Accessibility + DESIGN.md Do's. */}
-      <h1 className="sr-only">HAICHEN</h1>
+      <h1 className="sr-only">JOAN</h1>
       <canvas
         ref={canvasRef}
         className="block w-full h-full"

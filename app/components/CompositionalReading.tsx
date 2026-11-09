@@ -11,7 +11,7 @@ const ANALYSIS = {
     {
       label: "compositional structure",
       bullets: [
-        "Focal point is the stippled HAICHEN wordmark, in deliberate tension with the darker central column framing the tagline.",
+        "Focal point is the stippled JOAN wordmark, in deliberate tension with the darker central column framing the tagline.",
         "Hierarchy descends by scale: oversized serif wordmark, mono greeting, body tagline, bracketed tags as a terminal cadence.",
         "Three-zone horizontal grid keyed to the footer labels — the scattered translucent squares on the left function as a literal illustration of the 'perception' zone, not ambient texture.",
       ],

@@ -38,7 +38,7 @@ body {
 /* Visually-hidden utility. Standard pattern: element stays in the DOM and
    accessibility tree (screen readers announce it, search engines index it,
    keyboard tab order reaches it), but is invisible to sighted users. Used
-   for the page's semantic <h1>HAICHEN</h1> inside the ParticleHaichen
+   for the page's semantic <h1>JOAN</h1> inside the ParticleHaichen
    canvas wrapper, and for sr-only form labels. Defined explicitly here so
    the visually-hidden contract is independent of Tailwind generation. */
 .sr-only {

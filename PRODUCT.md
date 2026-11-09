@@ -40,8 +40,8 @@ Background canvas: 12,000-particle system implementing the "AI Vision Evolution"
 
 Center typographic stack, in order top to bottom:
 
-- Mono kicker: `HELLO, I'M HAICHEN.`
-- Giant Fraunces serif wordmark: `HAICHEN` (first name only — deliberate restraint). Particle reveal on mount: particles disperse from random positions and coalesce into the typographic form. Particles colored in Burnt Sienna. Soft elliptical glow behind the wordmark for legibility against the noise canvas.
+- Mono kicker: `HELLO, I'M JOAN.`
+- Giant Fraunces serif wordmark: `JOAN` (first name only — deliberate restraint). Particle reveal on mount: particles disperse from random positions and coalesce into the typographic form. Particles colored in Burnt Sienna. Soft elliptical glow behind the wordmark for legibility against the noise canvas.
 - Three-line intent copy, centered:
   - "Building things that make sense to the people who actually use them."
   - "Trying to think clearly when most things compete for attention."
@@ -235,7 +235,7 @@ This is the default lane an AI code assistant will pull a Next.js + Tailwind por
 
 ### Semantic DOM
 
-- The wordmark `HAICHEN` must exist as a semantic `<h1>` in the **initial server-rendered HTML**. Do not gate it on JS load. Particle animation is visual enhancement only. **Test: view-source must contain `<h1>HAICHEN</h1>`. Disable JS in DevTools and confirm the name remains readable.**
+- The wordmark `JOAN` must exist as a semantic `<h1>` in the **initial server-rendered HTML**. Do not gate it on JS load. Particle animation is visual enhancement only. **Test: view-source must contain `<h1>JOAN</h1>`. Disable JS in DevTools and confirm the name remains readable.**
 - All section headings use proper `<h2>` elements. The mono `– SECTION –` treatment is presentational (via `::before` / `::after` pseudo-elements or `aria-hidden` spans). **Screen readers should read "About", not "dash dash about dash dash".**
 
 ### Color contrast

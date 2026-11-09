@@ -208,7 +208,7 @@ function IDBadge() {
             <div className="flex-1 w-full flex items-center justify-center px-4 pt-0 pb-2">
               <Image
                 src="/me.jpg"
-                alt="Haichen Duan"
+                alt="Joan Duan"
                 width={210}
                 height={230}
                 sizes="260px"
@@ -224,7 +224,7 @@ function IDBadge() {
             {/* Name + caption block */}
             <div className="px-5 pt-3 pb-4 text-center">
               <div className="font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] leading-tight">
-                Haichen Duan
+                Joan Duan
               </div>
               <div className="mt-2 font-mono text-[10px] tracking-[0.15em] uppercase text-[var(--accent-small)]">
                 Designer · Engineer · Analyst
@@ -278,7 +278,7 @@ function IDBadge() {
                 Contact
               </p>
               <p className="font-display text-xl text-[var(--ink)] tracking-tight mb-4">
-                Haichen Duan
+                Joan Duan
               </p>
               <div className="w-12 h-px bg-[var(--accent)] mb-6" />
             </div>

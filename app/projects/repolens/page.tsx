@@ -418,7 +418,7 @@ export default function RepolensPage() {
             </p>
           </div>
           <p className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--mute)] mt-10">
-            — Haichen Duan, May 2026
+            — Joan Duan, May 2026
           </p>
         </section>
 

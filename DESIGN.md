@@ -1,6 +1,6 @@
 ---
 name: joanduan.dev
-description: Personal portfolio of Haichen "Joan" Duan — editorial typographic register, single warm-earth accent, restrained chrome with two earned technical moments (Hero particle state machine + Compositional Reading modal, and Interview Me RAG chat).
+description: Personal portfolio of Joan Duan — editorial typographic register, single warm-earth accent, restrained chrome with two earned technical moments (Hero particle state machine + Compositional Reading modal, and Interview Me RAG chat).
 colors:
   ink: "#1A1A1A"
   base: "#FAF8F5"
@@ -170,11 +170,11 @@ A restrained palette: tinted neutrals plus one warm-earth accent with a darkened
 **Body Font:** Inter (Google Fonts, variable sans)
 **Label/Mono Font:** Geist Mono (Google Fonts)
 
-**Character:** Editorial serif + clean sans + structural mono. Fraunces does the moments that earn weight (the giant `HAICHEN` wordmark in Hero, section openers, the `Probare et Aedificare.` motto, badge name, project titles, Compositional Reading modal title). Inter carries the long copy. Geist Mono does the structural work — section markers, chapter headers, contact rules, navigation labels, status pills, stack chips — set uppercase with heavy tracking so the mono reads as cataloguing notation, not as code-editor leftover.
+**Character:** Editorial serif + clean sans + structural mono. Fraunces does the moments that earn weight (the giant `JOAN` wordmark in Hero, section openers, the `Probare et Aedificare.` motto, badge name, project titles, Compositional Reading modal title). Inter carries the long copy. Geist Mono does the structural work — section markers, chapter headers, contact rules, navigation labels, status pills, stack chips — set uppercase with heavy tracking so the mono reads as cataloguing notation, not as code-editor leftover.
 
 ### Hierarchy
 
-- **Display XL** (Fraunces, 400, `clamp(4rem, 14vw, 12rem)`, line-height 0.95, letter-spacing -0.04em): the giant `HAICHEN` Hero wordmark only. Particle-revealed on mount; the single largest typographic moment on the site.
+- **Display XL** (Fraunces, 400, `clamp(4rem, 14vw, 12rem)`, line-height 0.95, letter-spacing -0.04em): the giant `JOAN` Hero wordmark only. Particle-revealed on mount; the single largest typographic moment on the site.
 - **Display** (Fraunces, 400, `clamp(2.5rem, 6vw, 3.75rem)`, line-height 1.05, letter-spacing -0.01em): section openers (`Probare et Aedificare.`, `Where the resume lives.`, `What I'm working on.`, `Smaller experiments.`, `Curious about something I haven't covered?`).
 - **Headline** (Fraunces, 400, 24px, line-height 1.15): project titles in Projects entries, badge name on the ID card, the Compositional Reading modal title `joanduan.dev — hero (v0.3)`.
 - **Body** (Inter, 400, 18px, line-height 1.6): hero declarative lines, chapter paragraphs, project body copy, Compositional Reading analysis bullets. Cap line length at 65–75ch — never wider, even on desktop where the content area could go further.
@@ -260,7 +260,7 @@ The badge is the system's biggest single craft moment in the visible chrome. It 
 
 A 12,000-particle canvas implementing the "AI Vision Evolution" concept, with three choreographed states (Perception, Comprehension, Composition) cycled manually via the `SEE HOW THIS PAGE READS ITSELF →` button in the Hero bottom-right strip. Each state shifts particle distribution, density, and color to suggest the conceptual phase.
 
-- **Particle reveal on mount:** particles disperse from random positions and coalesce into the typographic form of `HAICHEN`. Colored in Burnt Sienna.
+- **Particle reveal on mount:** particles disperse from random positions and coalesce into the typographic form of `JOAN`. Colored in Burnt Sienna.
 - **State machine cycle:** Perception → Comprehension → Composition, each state redistributes particles to suggest the phase. Triggered manually.
 - **Soft elliptical glow** behind the wordmark for legibility against the noise canvas.
 - **`prefers-reduced-motion: reduce`:** particle reveal replaced by immediate composed wordmark; state machine replaced by a static end-state; no transitions animate.
@@ -357,13 +357,13 @@ Never a box. Never a card. The section opens; the content cascades.
 
 - **Do** use hairline rules (`h-px` / `w-px`) as section dividers, link affordances, card borders, and structural marks. The hairline is the system's primary structural vocabulary.
 - **Do** set every mono label uppercase with letter-spacing 0.2–0.3em. The wide tracking is what makes Geist Mono read as catalogue notation rather than code-editor leftover.
-- **Do** reserve Fraunces for display moments only — the giant `HAICHEN` wordmark, section openers, the `Probare et Aedificare.` motto, badge name, project titles, the Compositional Reading modal title. The serif earns weight by appearing rarely.
+- **Do** reserve Fraunces for display moments only — the giant `JOAN` wordmark, section openers, the `Probare et Aedificare.` motto, badge name, project titles, the Compositional Reading modal title. The serif earns weight by appearing rarely.
 - **Do** keep body line length capped at 65–75ch even when the container is wider.
 - **Do** keep Burnt Sienna under 10% of any visible screen area. The accent works because it is rare.
 - **Do** use Burnt Sienna Dark `#8C5836` for any Burnt Sienna text rendered below 18pt regular / 14pt bold. Same hue, deeper lightness, retains WCAG AA at small sizes.
 - **Do** keep elevation flat. Shadows exist only on the TUM ID Badge. Every other surface sits on the page.
 - **Do** animate `transform` and `opacity` only. The existing CSS keyframes (badge-swing, badge-sway, era-midjourney-breathe, era-claude-focus-1) follow this rule.
-- **Do** render the `HAICHEN` wordmark as a semantic `<h1>` in the **initial server-rendered HTML**. Particle animation is visual enhancement only. View-source must contain `<h1>HAICHEN</h1>`. Disable JS and the name must remain readable.
+- **Do** render the `JOAN` wordmark as a semantic `<h1>` in the **initial server-rendered HTML**. Particle animation is visual enhancement only. View-source must contain `<h1>JOAN</h1>`. Disable JS and the name must remain readable.
 - **Do** use proper `<h2>` for section headings. The `– SECTION –` en-dash treatment is presentational (`::before`/`::after` or `aria-hidden` spans). Screen readers must hear "About", not "dash dash about dash dash".
 - **Do** respect `prefers-reduced-motion: reduce` — disable badge swing/sway, particle reveal + state machine, era animations, Claude focus rectangle, modal scale/slide. Replace with static end-states or opacity-only transitions.
 - **Do** keep audio opt-in. The `♪ READY · HOVER ME` affordance is the only audio activation surface; audio defaults OFF on page load; mute is always one click away on the same label.
@@ -395,11 +395,11 @@ Never a box. Never a card. The section opens; the content cascades.
   - (d) Burnt Sienna leading em-dash — bullet leaders in body copy
   - (e) No inline em-dashes in prose
 - **Don't** apply Burnt Sienna `#A0673E` to text below 18pt regular / 14pt bold without substituting `#8C5836`. WCAG AA at small sizes requires the darker variant.
-- **Don't** render the `HAICHEN` wordmark only via JS. The h1 must exist in the server-rendered HTML; particles enhance, not replace.
+- **Don't** render the `JOAN` wordmark only via JS. The h1 must exist in the server-rendered HTML; particles enhance, not replace.
 - **Don't** ship a Compositional Reading modal that lacks focus trap, escape-to-close, or `inert` background. The modal is a recruiter-facing centerpiece; broken a11y here disqualifies for both Lane A and Lane B.
 - **Don't** autoplay Web Audio. Audio activation requires explicit user hover or click on the `♪ READY · HOVER ME` affordance.
 
 ---
 
 Last updated: 2026-05-17
-Author: Haichen Duan (Joan)
+Author: Joan Duan

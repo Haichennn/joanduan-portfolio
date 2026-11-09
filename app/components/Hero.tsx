@@ -89,13 +89,13 @@ export default function Hero() {
 
       </div>
 
-      {/* Layer 0.5 — Soft veil so HAICHEN reads clearly over background */}
+      {/* Layer 0.5 — Soft veil so JOAN reads clearly over background */}
       <div className="absolute inset-0 bg-[var(--base)]/55 z-[1]" />
 
       {/* Layer 1 — Main heading (plain text for now; particles come in Phase B) */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6">
         <p className="font-mono text-[12px] tracking-[0.05em] uppercase text-[var(--mute)]">
-          Hello, I&apos;m Haichen.
+          Hello, I&apos;m Joan.
         </p>
         <div className="mt-6 w-full max-w-6xl">
           <ParticleHaichen />
